@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: Assets/AvatarsDemo/KinectAvatarsDemo.unity
     guid: 9ae851de45adb1a4fbcf68749943c4aa
   - enabled: 1
-    path: Assets/VC/3D Interactive Bar Chart/1.Scene/realGraph.unity
+    path: Assets/Graph/3D Interactive Bar Chart/1.Scene/realGraph.unity
     guid: 430e86c7ce451db4dbf3a20edd47d7e5
   - enabled: 1
     path: Assets/SlimUI/Modern Menu 1/Scenes/Demos/MainScene.unity
