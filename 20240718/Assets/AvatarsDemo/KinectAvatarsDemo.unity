@@ -1704,7 +1704,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'ML-agent
+  m_Text: 'MLAgent
 
 '
 --- !u!222 &1015712807
@@ -2644,7 +2644,7 @@ GameObject:
   - component: {fileID: 1470724814}
   - component: {fileID: 1470724813}
   m_Layer: 5
-  m_Name: asd
+  m_Name: ML-Agent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2728,7 +2728,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1470724813}
         m_TargetAssemblyTypeName: SceneChanger, Assembly-CSharp
-        m_MethodName: GoToMainScene
+        m_MethodName: GotoMLAgent
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3015,7 +3015,7 @@ GameObject:
   - component: {fileID: 1794467325}
   - component: {fileID: 1794467324}
   m_Layer: 0
-  m_Name: KinectCollisionHandler
+  m_Name: RightHandHandler
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3040,7 +3040,6 @@ MonoBehaviour:
   addC: {fileID: 272962788}
   angleText: {fileID: 1660064188}
   angleText2: {fileID: 1660064188}
-  angleText3: {fileID: 0}
   stars: {fileID: 1089627598}
 --- !u!4 &1794467325
 Transform:
@@ -3456,44 +3455,12 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
---- !u!1 &2086377466
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2086377468}
-  m_Layer: 0
-  m_Name: CalibrationText
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2086377468
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2086377466}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 1435215108}
   - {fileID: 1402753183}
-  - {fileID: 2086377468}
   - {fileID: 1381129588}
   - {fileID: 1058160026}
   - {fileID: 710748659}

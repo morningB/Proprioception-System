@@ -9,7 +9,10 @@ root = true
 # 들여쓰기 및 간격
 
 indent_size = 4
+[*]
 indent_style = space
+[*]
+charset = utf-8-bom
 tab_width = 4
 
 # 새 줄 기본 설정
@@ -229,3 +232,4 @@ dotnet_naming_style.begins_with_i.required_prefix = I
 dotnet_naming_style.begins_with_i.required_suffix = 
 dotnet_naming_style.begins_with_i.word_separator = 
 dotnet_naming_style.begins_with_i.capitalization = pascal_case
+

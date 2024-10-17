@@ -14,6 +14,8 @@ public class Ball3DAgent : Agent
     Rigidbody m_BallRb;
     EnvironmentParameters m_ResetParams;
 
+    private RightHand RightHandScript = new RightHand();
+
     public override void Initialize()
     {
         m_BallRb = ball.GetComponent<Rigidbody>();
@@ -34,30 +36,43 @@ public class Ball3DAgent : Agent
 
     public override void OnActionReceived(ActionBuffers actionBuffers)
     {
+        // 행동 버퍼에서 2개의 행동 값을 가져옴 (0번은 x축, 1번은 z축 움직임)
         var actionZ = 2f * Mathf.Clamp(actionBuffers.ContinuousActions[0], -1f, 1f);
         var actionX = 2f * Mathf.Clamp(actionBuffers.ContinuousActions[1], -1f, 1f);
-        
+
+        // z축 회전 제한을 두고 회전 수행
         if ((gameObject.transform.rotation.z < 0.25f && actionZ > 0f) ||
             (gameObject.transform.rotation.z > -0.25f && actionZ < 0f))
         {
             gameObject.transform.Rotate(new Vector3(0, 0, 1), actionZ);
         }
 
+        // x축 회전 제한을 두고 회전 수행
         if ((gameObject.transform.rotation.x < 0.25f && actionX > 0f) ||
             (gameObject.transform.rotation.x > -0.25f && actionX < 0f))
         {
             gameObject.transform.Rotate(new Vector3(1, 0, 0), actionX);
         }
-        if ((ball.transform.position.y - gameObject.transform.position.y) < -2f ||
-            Mathf.Abs(ball.transform.position.x - gameObject.transform.position.x) > 3f ||
-            Mathf.Abs(ball.transform.position.z - gameObject.transform.position.z) > 3f)
+
+        // 각도 계산 (예: x축을 기준으로)
+        float angle = 190f;
+
+        // 각도가 85도에서 95도 사이에 있을 때 보상 부여하고, 공이 떨어지지 않도록 유지
+        if (angle >= 85f && angle <= 95f)
         {
-            SetReward(-1f);
-            EndEpisode();
+            SetReward(0.1f);  // 목표 각도에 근접하면 보상 0.1점
+            Debug.Log("성공");
         }
+        // 각도가 95도를 초과하거나 85도 미만일 때 공이 떨어지도록 설정
         else
         {
-            SetReward(0.1f);
+            SetReward(-0.1f); // 잘못된 각도에 대해 패널티 부여
+
+            // 큐브를 기울여 공이 떨어지게 만듦
+            transform.Rotate(new Vector3(10f, 0f, 0f), Space.Self); // x축을 기준으로 10도 기울임
+
+            EndEpisode();  // 에피소드 종료
+            Debug.Log("종료: 각도가 범위를 벗어났습니다.");
         }
     }
 

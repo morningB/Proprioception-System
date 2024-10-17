@@ -276,7 +276,6 @@ MonoBehaviour:
   addC: {fileID: 0}
   angleText: {fileID: 0}
   angleText2: {fileID: 0}
-  angleText3: {fileID: 0}
   stars: {fileID: 0}
 --- !u!1 &110932566
 GameObject:
@@ -327,7 +326,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 1
+  m_UiScaleMode: 0
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 1000, y: 600}
@@ -1001,7 +1000,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 1
+  m_UiScaleMode: 0
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 1000, y: 600}
@@ -2058,7 +2057,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1305491373}
         m_TargetAssemblyTypeName: SceneChanger, Assembly-CSharp
-        m_MethodName: GoToMainScene
+        m_MethodName: GotoMLAgent
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2813,7 +2812,6 @@ MonoBehaviour:
   addC: {fileID: 2062070208}
   angleText: {fileID: 1660064188}
   angleText2: {fileID: 1660064188}
-  angleText3: {fileID: 1150151868}
   stars: {fileID: 1089627598}
 --- !u!1 &1660064186
 GameObject:
@@ -3019,7 +3017,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: GoToMain
+  m_Text: MLAgent
 --- !u!222 &1698274863
 CanvasRenderer:
   m_ObjectHideFlags: 0

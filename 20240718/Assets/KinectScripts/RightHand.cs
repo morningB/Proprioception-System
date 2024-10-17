@@ -11,6 +11,7 @@ public class RightHand : MonoBehaviour
     public Button result;
     public Button addC;
 
+
     // 좌표 위치 정보
     private Vector3 handPosition;
     private Vector3 twohandPosition;
@@ -21,7 +22,7 @@ public class RightHand : MonoBehaviour
     // 눈감았을 때 각도
     public TextMeshProUGUI angleText2;
     // 실시간 각도
-    public TextMeshProUGUI angleText3;
+  //  private TextMeshProUGUI angleText3;
 
     //각도 차이를 csv에 저장하기 위한 변수
     private float openAngle;
@@ -58,6 +59,7 @@ public class RightHand : MonoBehaviour
         reset.onClick.AddListener(OnResetClick);
         result.onClick.AddListener(OnResultClick);
         addC.onClick.AddListener(OnAddC);
+
         // CSV 파일 초기화
         InitializeCSVFiles();
     }
@@ -66,7 +68,7 @@ public class RightHand : MonoBehaviour
         // 이미지 보이게 하기
         float currentAngle = getAngle();
         // 실시간 각도 측정
-        angleText3.text = currentAngle.ToString("F2");
+     //   angleText3.text = currentAngle.ToString("F2");
         Color originColor = Color.yellow;
         float alpha = Mathf.Clamp01(currentAngle / 90f); // 각도에 따라 알파 값 결정
 
@@ -203,7 +205,7 @@ public class RightHand : MonoBehaviour
         // twohandPosition = GetRightHandPosition();
         closeAngle = an;
     }
-
+   
     public float getAngle()
     {
         Vector3 rightHand = GetRightHandPosition();
@@ -306,7 +308,14 @@ public class RightHand : MonoBehaviour
         Debug.LogWarning("Right ankle joint not tracked. Using previous position.");
         return previousRightAnklePosition;
     }
-
+    public float GetAngle()
+    {
+        if (float.TryParse(angleText.text, out float angle))
+        {
+            return angle;
+        }
+        return 0f;  // 기본값 반환
+    }
     /*
     void MoveImageToPosition(Vector3 position)
     {

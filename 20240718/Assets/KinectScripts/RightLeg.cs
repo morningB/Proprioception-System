@@ -20,7 +20,7 @@ public class RightLeg : MonoBehaviour
     // 눈감았을 때 각도
     public TextMeshProUGUI angleText2;
     // 실시간 각도
-    public TextMeshProUGUI angleText3;
+    private TextMeshProUGUI angleText3;
 
     //각도 차이를 csv에 저장하기 위한 변수
     private float openAngle;
@@ -33,7 +33,7 @@ public class RightLeg : MonoBehaviour
     private string csvFilePath = "Assets/Resources/RL/tes.csv";
     private string angleFile = "Assets/Resources/RL/an.csv";
     private string resultFile = "Assets/Resources/RL/re.csv";
-
+    private string MLFile = "Assets/Resources/RL/re.csv";
     // 이전 값을 저장하기 위한 좌표
     private Vector3 previousRightHandPosition;
     private Vector3 previousRightShoulderPosition;
@@ -66,6 +66,9 @@ public class RightLeg : MonoBehaviour
         float currentAngle = getAngle();
         // 실시간 각도 측정
         angleText3.text = currentAngle.ToString("F2");
+        
+        SaveDataToMLFile(float.Parse(angleText3.text));
+        
         Color originColor = Color.yellow;
         float alpha = Mathf.Clamp01(currentAngle / 45f); // 각도에 따라 알파 값 결정
 
@@ -111,6 +114,13 @@ public class RightLeg : MonoBehaviour
                 sw3.WriteLine("result");
             }
         }
+        if (!File.Exists(MLFile))
+        {
+            using (StreamWriter sw3 = new StreamWriter(MLFile))
+            {
+                Debug.Log("ML csv 파일 생성");
+            }
+        }
     }
 
     void SaveDataToCSVFilePath(Vector3 rightHandPos, Vector3 rightShoulderPos, Vector3 rightAnklePos)
@@ -144,6 +154,13 @@ public class RightLeg : MonoBehaviour
         using (StreamWriter sw = File.AppendText(resultFile))
         {
             sw.WriteLine($"{name},{re}");
+        }
+    }
+    void SaveDataToMLFile(float angle)
+    {
+        using (StreamWriter sw = File.AppendText(resultFile))
+        {
+            sw.WriteLine($"{angle}");
         }
     }
 

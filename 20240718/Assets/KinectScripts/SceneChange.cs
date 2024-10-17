@@ -41,4 +41,10 @@ public class SceneChanger : MonoBehaviour
     {
         SceneManager.LoadScene("LeftLegScene");
     }
+    public void GotoMLAgent()
+    {
+        
+        SceneManager.LoadScene("3DBall");
+        //SceneManager 메서드의 LoadScene 함수를 통해 acredev2.scene으로 씬 전환
+    }
 }
