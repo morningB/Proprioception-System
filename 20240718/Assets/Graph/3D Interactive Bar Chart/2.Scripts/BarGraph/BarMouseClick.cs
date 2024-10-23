@@ -48,7 +48,6 @@ namespace BarGraph.VittorCloud
             outline.enabled = true;
             PointerDownOnBar(bar);
 
-
         }
         public void OnMouseUp()
         {

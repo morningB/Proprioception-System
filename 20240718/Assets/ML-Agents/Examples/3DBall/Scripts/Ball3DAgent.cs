@@ -1,8 +1,10 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
 using Random = UnityEngine.Random;
+using System.Collections.Generic;
+using System.IO;
 
 public class Ball3DAgent : Agent
 {
@@ -14,8 +16,33 @@ public class Ball3DAgent : Agent
     Rigidbody m_BallRb;
     EnvironmentParameters m_ResetParams;
 
-    private RightHand RightHandScript = new RightHand();
+    // ìˆ˜ì •ë¶€ë¶„
+    private List<float> angles; // CSVì—ì„œ ì½ì€ ê°ë„ë¥¼ ì €ì¥í•  ë¦¬ìŠ¤íŠ¸
+    private int currentIndex = 0; // ê°ë„ë¥¼ ìˆœì°¨ì ìœ¼ë¡œ ì‚¬ìš©í•˜ê¸° ìœ„í•œ ì¸ë±ìŠ¤
+    
+    private void Start()
+    {
 
+        angles = LoadAnglesFromCSV("Assets/Resources/ml.csv");
+        Debug.Log("ì„±ê³µì ìœ¼ë¡œ anglesì— í• ë‹¹");
+    }
+    private List<float> LoadAnglesFromCSV(string filePath)
+    {
+        List<float> loadedAngles = new List<float>();
+        using (StreamReader reader = new StreamReader(filePath))
+        {
+            string line;
+            while ((line = reader.ReadLine()) != null)
+            {
+                // CSV íŒŒì¼ì—ì„œ ê°ë„ ê°’ì„ ì½ê³  ë¦¬ìŠ¤íŠ¸ì— ì¶”ê°€
+                if (float.TryParse(line, out float angle))
+                {
+                    loadedAngles.Add(angle);
+                }
+            }
+        }
+        return loadedAngles;
+    }
     public override void Initialize()
     {
         m_BallRb = ball.GetComponent<Rigidbody>();
@@ -36,43 +63,47 @@ public class Ball3DAgent : Agent
 
     public override void OnActionReceived(ActionBuffers actionBuffers)
     {
-        // Çàµ¿ ¹öÆÛ¿¡¼­ 2°³ÀÇ Çàµ¿ °ªÀ» °¡Á®¿È (0¹øÀº xÃà, 1¹øÀº zÃà ¿òÁ÷ÀÓ)
+        // í–‰ë™ ë²„í¼ì—ì„œ 2ê°œì˜ í–‰ë™ ê°’ì„ ê°€ì ¸ì˜´ (0ë²ˆì€ xì¶•, 1ë²ˆì€ zì¶• ì›€ì§ì„)
         var actionZ = 2f * Mathf.Clamp(actionBuffers.ContinuousActions[0], -1f, 1f);
         var actionX = 2f * Mathf.Clamp(actionBuffers.ContinuousActions[1], -1f, 1f);
 
-        // zÃà È¸Àü Á¦ÇÑÀ» µÎ°í È¸Àü ¼öÇà
+        // zì¶• íšŒì „ ì œí•œì„ ë‘ê³  íšŒì „ ìˆ˜í–‰
         if ((gameObject.transform.rotation.z < 0.25f && actionZ > 0f) ||
             (gameObject.transform.rotation.z > -0.25f && actionZ < 0f))
         {
             gameObject.transform.Rotate(new Vector3(0, 0, 1), actionZ);
         }
 
-        // xÃà È¸Àü Á¦ÇÑÀ» µÎ°í È¸Àü ¼öÇà
+        // xì¶• íšŒì „ ì œí•œì„ ë‘ê³  íšŒì „ ìˆ˜í–‰
         if ((gameObject.transform.rotation.x < 0.25f && actionX > 0f) ||
             (gameObject.transform.rotation.x > -0.25f && actionX < 0f))
         {
             gameObject.transform.Rotate(new Vector3(1, 0, 0), actionX);
         }
-
-        // °¢µµ °è»ê (¿¹: xÃàÀ» ±âÁØÀ¸·Î)
-        float angle = 190f;
-
-        // °¢µµ°¡ 85µµ¿¡¼­ 95µµ »çÀÌ¿¡ ÀÖÀ» ¶§ º¸»ó ºÎ¿©ÇÏ°í, °øÀÌ ¶³¾îÁöÁö ¾Êµµ·Ï À¯Áö
-        if (angle >= 85f && angle <= 95f)
+        if (currentIndex >= angles.Count)
         {
-            SetReward(0.1f);  // ¸ñÇ¥ °¢µµ¿¡ ±ÙÁ¢ÇÏ¸é º¸»ó 0.1Á¡
-            Debug.Log("¼º°ø");
+            Debug.Log("ëª¨ë“  ê°ë„ë¥¼ ì‚¬ìš©í–ˆìŠµë‹ˆë‹¤. ì—í”¼ì†Œë“œë¥¼ ì¢…ë£Œí•©ë‹ˆë‹¤.");
+            EndEpisode();
+            return; // ì´í›„ ì½”ë“œë¥¼ ì‹¤í–‰í•˜ì§€ ì•Šë„ë¡ ì¢…ë£Œ
         }
-        // °¢µµ°¡ 95µµ¸¦ ÃÊ°úÇÏ°Å³ª 85µµ ¹Ì¸¸ÀÏ ¶§ °øÀÌ ¶³¾îÁöµµ·Ï ¼³Á¤
+        // ê°ë„ ê³„ì‚° (ì˜ˆ: xì¶•ì„ ê¸°ì¤€ìœ¼ë¡œ)
+        float angle = angles[currentIndex];
+        currentIndex = (currentIndex + 1) % angles.Count;
+        Debug.Log("í˜„ì¬ ì‚¬ìš©ì¤‘ì¸ angle : "+angle);
+        // ê°ë„ê°€ 85ë„ì—ì„œ 95ë„ ì‚¬ì´ì— ìˆì„ ë•Œ ë³´ìƒ ë¶€ì—¬í•˜ê³ , ê³µì´ ë–¨ì–´ì§€ì§€ ì•Šë„ë¡ ìœ ì§€
+        if (angle >= 88f && angle <= 92f)
+        {
+            SetReward(0.1f);  // ëª©í‘œ ê°ë„ì— ê·¼ì ‘í•˜ë©´ ë³´ìƒ 0.1ì 
+            Debug.Log("ì„±ê³µ");
+        }
+        // ê°ë„ê°€ 95ë„ë¥¼ ì´ˆê³¼í•˜ê±°ë‚˜ 85ë„ ë¯¸ë§Œì¼ ë•Œ ê³µì´ ë–¨ì–´ì§€ë„ë¡ ì„¤ì •
         else
         {
-            SetReward(-0.1f); // Àß¸øµÈ °¢µµ¿¡ ´ëÇØ ÆĞ³ÎÆ¼ ºÎ¿©
-
-            // Å¥ºê¸¦ ±â¿ï¿© °øÀÌ ¶³¾îÁö°Ô ¸¸µê
-            transform.Rotate(new Vector3(10f, 0f, 0f), Space.Self); // xÃàÀ» ±âÁØÀ¸·Î 10µµ ±â¿ïÀÓ
-
-            EndEpisode();  // ¿¡ÇÇ¼Òµå Á¾·á
-            Debug.Log("Á¾·á: °¢µµ°¡ ¹üÀ§¸¦ ¹ş¾î³µ½À´Ï´Ù.");
+            SetReward(-0.1f); // ì˜ëª»ëœ ê°ë„ì— ëŒ€í•´ íŒ¨ë„í‹° ë¶€ì—¬
+            // íë¸Œë¥¼ ê¸°ìš¸ì—¬ ê³µì´ ë–¨ì–´ì§€ê²Œ ë§Œë“¦
+            transform.Rotate(new Vector3(10f, 0f, 0f), Space.Self); // xì¶•ì„ ê¸°ì¤€ìœ¼ë¡œ 10ë„ ê¸°ìš¸ì„
+            EndEpisode();  // ì—í”¼ì†Œë“œ ì¢…ë£Œ
+            Debug.Log("ì¢…ë£Œ: ê°ë„ê°€ ë²”ìœ„ë¥¼ ë²—ì–´ë‚¬ìŠµë‹ˆë‹¤.");
         }
     }
 
