@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
 using TMPro;
@@ -11,35 +11,35 @@ public class LeftLeg : MonoBehaviour
     public Button result;
     public Button addC;
 
-    // ÁÂÇ¥ À§Ä¡ Á¤º¸
+    // ì¢Œí‘œ ìœ„ì¹˜ ì •ë³´
     private Vector3 handPosition;
     private Vector3 twohandPosition;
 
-    // scene¿¡ Ç¥ÇöÇÒ °¢µµ Á¤º¸
-    // ´«¶¹À» ¶§ °¢µµ
+    // sceneì— í‘œí˜„í•  ê°ë„ ì •ë³´
+    // ëˆˆë–´ì„ ë•Œ ê°ë„
     public TextMeshProUGUI angleText;
-    // ´«°¨¾ÒÀ» ¶§ °¢µµ
+    // ëˆˆê°ì•˜ì„ ë•Œ ê°ë„
     public TextMeshProUGUI angleText2;
-    // ½Ç½Ã°£ °¢µµ
+    // ì‹¤ì‹œê°„ ê°ë„
     public TextMeshProUGUI angleText3;
 
 
-    //°¢µµ Â÷ÀÌ¸¦ csv¿¡ ÀúÀåÇÏ±â À§ÇÑ º¯¼ö
+    //ê°ë„ ì°¨ì´ë¥¼ csvì— ì €ìž¥í•˜ê¸° ìœ„í•œ ë³€ìˆ˜
     private float openAngle;
     private float closeAngle;
 
  //   public Image handImage;
     public Image stars;
 
-    // CSV ÆÄÀÏ °æ·Î
+    // CSV íŒŒì¼ ê²½ë¡œ
     private string csvFilePath = "Assets/Resources/LL/tes.csv";
     private string angleFile = "Assets/Resources/LL/an.csv";
-    private string resultFile = "Assets/Resources/LL/re.csv";
+    private string resultFile = "Assets/Resources/re.csv";
 
-    // ÃøÁ¤ È½¼ö
+    // ì¸¡ì • íšŸìˆ˜
     private int measurementCount;
 
-    // ÀÌÀü °ªÀ» ÀúÀåÇÏ±â À§ÇÑ ÁÂÇ¥
+    // ì´ì „ ê°’ì„ ì €ìž¥í•˜ê¸° ìœ„í•œ ì¢Œí‘œ
     private Vector3 previousRightHandPosition;
     private Vector3 previousRightShoulderPosition;
     private Vector3 previousRightAnklePosition;
@@ -49,35 +49,35 @@ public class LeftLeg : MonoBehaviour
         openAngle = 0f;
         closeAngle = 0f;
 
-        // ÀÌ¹ÌÁö ºñÈ°¼ºÈ­
+        // ì´ë¯¸ì§€ ë¹„í™œì„±í™”
         if (stars == null)
             Debug.LogError("Angle Image is not assigned.");
       //  handImage.enabled = false;
 
-        // ¹öÆ° Å¬¸¯ ÀÌº¥Æ®¿¡ ´ëÇÑ ¸®½º³Ê Ãß°¡
+        // ë²„íŠ¼ í´ë¦­ ì´ë²¤íŠ¸ì— ëŒ€í•œ ë¦¬ìŠ¤ë„ˆ ì¶”ê°€
         eyeOpen.onClick.AddListener(OnEyeOpenClick);
         eyeClose.onClick.AddListener(OnEyeCloseClick);
         reset.onClick.AddListener(OnResetClick);
         result.onClick.AddListener(OnResultClick);
         addC.onClick.AddListener(OnAddC);
 
-        // CSV ÆÄÀÏ ÃÊ±âÈ­
+        // CSV íŒŒì¼ ì´ˆê¸°í™”
         InitializeCSVFiles();
     }
     private void Update()
     {
-        // ÀÌ¹ÌÁö º¸ÀÌ°Ô ÇÏ±â
+        // ì´ë¯¸ì§€ ë³´ì´ê²Œ í•˜ê¸°
         float currentAngle = getAngle();
-        // ½Ç½Ã°£ °¢µµ ÃøÁ¤
+        // ì‹¤ì‹œê°„ ê°ë„ ì¸¡ì •
         angleText3.text = currentAngle.ToString("F2");
         Color originColor = Color.yellow;
-        float alpha = Mathf.Clamp01(currentAngle / 45f); // °¢µµ¿¡ µû¶ó ¾ËÆÄ °ª °áÁ¤
+        float alpha = Mathf.Clamp01(currentAngle / 45f); // ê°ë„ì— ë”°ë¼ ì•ŒíŒŒ ê°’ ê²°ì •
 
         Color newColor = stars.color;
 
         if (currentAngle > 48f)
         {
-            // °¢µµ°¡ 45¸¦ ³ÑÀ¸¸é »ö»óÀ» »¡°£»öÀ¸·Î º¯°æ
+            // ê°ë„ê°€ 45ë¥¼ ë„˜ìœ¼ë©´ ìƒ‰ìƒì„ ë¹¨ê°„ìƒ‰ìœ¼ë¡œ ë³€ê²½
             newColor = Color.red;
         }
         else if (currentAngle < 43)
@@ -86,7 +86,7 @@ public class LeftLeg : MonoBehaviour
         }
         else
         {
-            // °¢µµ°¡ 45 ÀÌÇÏÀÌ¸é ¾ËÆÄ °ª¸¸ º¯°æ
+            // ê°ë„ê°€ 45 ì´í•˜ì´ë©´ ì•ŒíŒŒ ê°’ë§Œ ë³€ê²½
             newColor.a = alpha;
             newColor = originColor;
         }
@@ -122,12 +122,12 @@ public class LeftLeg : MonoBehaviour
         measurementCount++;
         using (StreamWriter sw = File.AppendText(angleFile))
         {
-            sw.WriteLine($"{measurementCount}"+ "Â÷");
+            sw.WriteLine($"{measurementCount}"+ "ì°¨");
         }
     }
     void SaveDataToCSVFilePath(Vector3 rightHandPos, Vector3 rightShoulderPos, Vector3 rightAnklePos)
     {
-        // CSV ÆÄÀÏ¿¡ µ¥ÀÌÅÍ Ãß°¡
+        // CSV íŒŒì¼ì— ë°ì´í„° ì¶”ê°€
         using (StreamWriter sw = File.AppendText(csvFilePath))
         {
             sw.WriteLine($"{rightHandPos.x},{rightHandPos.y},{rightHandPos.z},{rightShoulderPos.x},{rightShoulderPos.y},{rightShoulderPos.z},{rightAnklePos.x},{rightAnklePos.y},{rightAnklePos.z}");
@@ -136,7 +136,7 @@ public class LeftLeg : MonoBehaviour
 
     void SaveDataToAngleFile(float angle)
     {
-        // CSV ÆÄÀÏ¿¡ µ¥ÀÌÅÍ Ãß°¡
+        // CSV íŒŒì¼ì— ë°ì´í„° ì¶”ê°€
         using (StreamWriter sw = File.AppendText(angleFile))
         {
             sw.WriteLine($"{angle}");
@@ -145,7 +145,7 @@ public class LeftLeg : MonoBehaviour
 
     void SaveDataTResultFile(string name,float re)
     {
-        // CSV ÆÄÀÏ¿¡ µ¥ÀÌÅÍ Ãß°¡
+        // CSV íŒŒì¼ì— ë°ì´í„° ì¶”ê°€
         using (StreamWriter sw = File.AppendText(resultFile))
         {
             sw.WriteLine($"{name},{re}");
@@ -154,7 +154,7 @@ public class LeftLeg : MonoBehaviour
 
     private void OnResultClick()
     {
-        // Static º¯¼ö¸¦ »ç¿ëÇÏ¿© InputFieldÀÇ ÅØ½ºÆ® °¡Á®¿À±â
+        // Static ë³€ìˆ˜ë¥¼ ì‚¬ìš©í•˜ì—¬ InputFieldì˜ í…ìŠ¤íŠ¸ ê°€ì ¸ì˜¤ê¸°
         string inputText = InputName.inputText;
         if (inputText == null || inputText == "")
         {
@@ -182,7 +182,7 @@ public class LeftLeg : MonoBehaviour
         stars.color = a;
     }
 
-    // ¹öÆ° Å¬¸¯ ÀÌº¥Æ® ÇÚµé·¯
+    // ë²„íŠ¼ í´ë¦­ ì´ë²¤íŠ¸ í•¸ë“¤ëŸ¬
     void OnEyeOpenClick()
     {
         float an = getAngle();
@@ -190,7 +190,7 @@ public class LeftLeg : MonoBehaviour
 
         //handPosition = GetRightHandPosition();
 
-        // ÀÌ¹ÌÁö È°¼ºÈ­
+        // ì´ë¯¸ì§€ í™œì„±í™”
         //  handImage.enabled = true;
 
         // MoveImageToPosition(handPosition);
@@ -220,11 +220,11 @@ public class LeftLeg : MonoBehaviour
             return 0.0f;
         }
 
-        // ¾î±ú¸¦ Áß½ÉÀ¸·Î ÇÑ ¿À¸¥¼Õ°ú ¿À¸¥¹ß¸ñÀÇ º¤ÅÍ °è»ê
+        // ì–´ê¹¨ë¥¼ ì¤‘ì‹¬ìœ¼ë¡œ í•œ ì˜¤ë¥¸ì†ê³¼ ì˜¤ë¥¸ë°œëª©ì˜ ë²¡í„° ê³„ì‚°
         Vector3 handVector = rightHand - rightShoulder;
         Vector3 ankleVector = rightAnkle - rightShoulder;
 
-        // µÎ º¤ÅÍ °£ÀÇ °¢µµ °è»ê
+        // ë‘ ë²¡í„° ê°„ì˜ ê°ë„ ê³„ì‚°
         float angle = Vector3.Angle(handVector, ankleVector);
 
         SaveDataToCSVFilePath(rightHand, rightShoulder, rightAnkle);
@@ -232,7 +232,7 @@ public class LeftLeg : MonoBehaviour
         return angle;
     }
 
-    // Å°³ØÆ®¿¡¼­ ¿À¸¥¼Õ ÁÂÇ¥¸¦ °¡Á®¿À´Â ÇÔ¼ö
+    // í‚¤ë„¥íŠ¸ì—ì„œ ì˜¤ë¥¸ì† ì¢Œí‘œë¥¼ ê°€ì ¸ì˜¤ëŠ” í•¨ìˆ˜
     private Vector3 GetRightHipPosition()
     {
         KinectWrapper.NuiSkeletonPositionIndex joint = KinectWrapper.NuiSkeletonPositionIndex.HipRight;

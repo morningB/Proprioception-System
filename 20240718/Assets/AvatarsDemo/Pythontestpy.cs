@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.IO;
 using System.Net.Sockets;
 using TMPro;
@@ -7,8 +7,8 @@ using UnityEngine.UI;
 
 public class MLModelVisualization : MonoBehaviour
 {
-    public RawImage displayImage;  // Unity UI¿¡ RawImage¸¦ ¹èÄ¡ÇÏ¿© ÀÌ¹ÌÁö Ç¥½Ã
-    public TextMeshProUGUI performanceText;   // ¼º´É ÁöÇ¥¸¦ Ç¥½ÃÇÒ Text UI
+    public RawImage displayImage;  // Unity UIì— RawImageë¥¼ ë°°ì¹˜í•˜ì—¬ ì´ë¯¸ì§€ í‘œì‹œ
+    public TextMeshProUGUI performanceText;   // ì„±ëŠ¥ ì§€í‘œë¥¼ í‘œì‹œí•  Text UI
 
     private TcpClient client;
     private NetworkStream stream;
@@ -17,7 +17,7 @@ public class MLModelVisualization : MonoBehaviour
     {
         ConnectToPythonServer();
     }
-    // Stream¿¡¼­ 4¹ÙÀÌÆ®·Î Àü¼ÛµÈ µ¥ÀÌÅÍ ±æÀÌ¸¦ ÀÐ´Â ÇÔ¼ö
+    // Streamì—ì„œ 4ë°”ì´íŠ¸ë¡œ ì „ì†¡ëœ ë°ì´í„° ê¸¸ì´ë¥¼ ì½ëŠ” í•¨ìˆ˜
     int ReadIntFromStream(NetworkStream stream)
     {
         byte[] lengthBytes = new byte[4];
@@ -25,10 +25,10 @@ public class MLModelVisualization : MonoBehaviour
         return BitConverter.ToInt32(lengthBytes, 0);
     }
 
-    // Stream¿¡¼­ ÁöÁ¤µÈ ±æÀÌ¸¸Å­ ¹®ÀÚ¿­À» ÀÐ´Â ÇÔ¼ö
+    // Streamì—ì„œ ì§€ì •ëœ ê¸¸ì´ë§Œí¼ ë¬¸ìžì—´ì„ ì½ëŠ” í•¨ìˆ˜
     string ReadFromStream(NetworkStream stream)
     {
-        int dataLength = ReadIntFromStream(stream);  // µ¥ÀÌÅÍ ±æÀÌ ÀÐ±â
+        int dataLength = ReadIntFromStream(stream);  // ë°ì´í„° ê¸¸ì´ ì½ê¸°
         byte[] dataBytes = new byte[dataLength];
         stream.Read(dataBytes, 0, dataLength);
         return System.Text.Encoding.UTF8.GetString(dataBytes);
@@ -40,11 +40,11 @@ public class MLModelVisualization : MonoBehaviour
             client = new TcpClient("localhost", 5000);
             stream = client.GetStream();
 
-            // Python ¼­¹ö·ÎºÎÅÍ ÀÌ¹ÌÁö ¼ö½Å
+            // Python ì„œë²„ë¡œë¶€í„° ì´ë¯¸ì§€ ìˆ˜ì‹ 
             byte[] imageBytes = ReceiveImage();
             DisplayImage(imageBytes);
 
-            // ¼º´É ÁöÇ¥ ¼ö½Å
+            // ì„±ëŠ¥ ì§€í‘œ ìˆ˜ì‹ 
             string confusionMatrix = ReadFromStream(stream);
             string classificationReport = ReadFromStream(stream);
 
@@ -65,7 +65,7 @@ public class MLModelVisualization : MonoBehaviour
         while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) > 0)
         {
             memoryStream.Write(buffer, 0, bytesRead);
-            if (bytesRead < buffer.Length) break;  // µ¥ÀÌÅÍ ¼ö½Å ¿Ï·á
+            if (bytesRead < buffer.Length) break;  // ë°ì´í„° ìˆ˜ì‹  ì™„ë£Œ
         }
 
         return memoryStream.ToArray();
