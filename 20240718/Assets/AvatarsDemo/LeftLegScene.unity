@@ -276,6 +276,7 @@ MonoBehaviour:
   addC: {fileID: 0}
   angleText: {fileID: 0}
   angleText2: {fileID: 0}
+  angleText3: {fileID: 0}
   stars: {fileID: 0}
 --- !u!1 &110932566
 GameObject:
@@ -374,7 +375,7 @@ RectTransform:
   m_Children:
   - {fileID: 1660064187}
   - {fileID: 1089627600}
-  - {fileID: 1150151867}
+  - {fileID: 1141375377}
   - {fileID: 265753544}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1717,7 +1718,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 80, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &1150151866
+--- !u!1 &1141375376
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1725,23 +1726,23 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1150151867}
-  - component: {fileID: 1150151869}
-  - component: {fileID: 1150151868}
+  - component: {fileID: 1141375377}
+  - component: {fileID: 1141375378}
+  - component: {fileID: 1141375379}
   m_Layer: 5
-  m_Name: realTimeAngle
+  m_Name: Real Time
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &1150151867
+--- !u!224 &1141375377
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1150151866}
+  m_GameObject: {fileID: 1141375376}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -1754,13 +1755,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1150151868
+--- !u!222 &1141375378
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1141375376}
+  m_CullTransparentMesh: 1
+--- !u!114 &1141375379
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1150151866}
+  m_GameObject: {fileID: 1141375376}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
@@ -1774,7 +1783,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: RealTime
+  m_text: 'Real Time
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: dc36b3fdc14f47ebb36fd484a67e268a, type: 2}
   m_sharedMaterial: {fileID: 2140032, guid: dc36b3fdc14f47ebb36fd484a67e268a, type: 2}
@@ -1783,8 +1794,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4283124297
-  m_fontColor: {r: 0.28627452, g: 0.2901961, b: 0.29411766, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1843,14 +1854,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!222 &1150151869
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1150151866}
-  m_CullTransparentMesh: 1
 --- !u!1 &1254528585 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100004, guid: ae23d50304c93b9418b65cec8f9fe954, type: 3}
@@ -2757,7 +2760,7 @@ MonoBehaviour:
   addC: {fileID: 1024347672}
   angleText: {fileID: 1660064188}
   angleText2: {fileID: 1660064188}
-  angleText3: {fileID: 1150151868}
+  angleText3: {fileID: 1141375379}
   stars: {fileID: 1089627598}
 --- !u!4 &1514635023
 Transform:

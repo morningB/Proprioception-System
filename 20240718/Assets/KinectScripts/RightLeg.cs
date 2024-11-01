@@ -20,7 +20,7 @@ public class RightLeg : MonoBehaviour
     // 눈감았을 때 각도
     public TextMeshProUGUI angleText2;
     // 실시간 각도
-    private TextMeshProUGUI angleText3;
+    public TextMeshProUGUI angleText3;
 
     //각도 차이를 csv에 저장하기 위한 변수
     private float openAngle;

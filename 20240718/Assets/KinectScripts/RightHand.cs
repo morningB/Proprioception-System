@@ -22,7 +22,7 @@ public class RightHand : MonoBehaviour
     // 눈감았을 때 각도
     public TextMeshProUGUI angleText2;
     // 실시간 각도
-  //  private TextMeshProUGUI angleText3;
+    public TextMeshProUGUI angleText3;
 
     //각도 차이를 csv에 저장하기 위한 변수
     private float openAngle;
@@ -68,7 +68,7 @@ public class RightHand : MonoBehaviour
         // 이미지 보이게 하기
         float currentAngle = getAngle();
         // 실시간 각도 측정
-     //   angleText3.text = currentAngle.ToString("F2");
+         angleText3.text = currentAngle.ToString("F2");
         Color originColor = Color.yellow;
         float alpha = Mathf.Clamp01(currentAngle / 90f); // 각도에 따라 알파 값 결정
 
