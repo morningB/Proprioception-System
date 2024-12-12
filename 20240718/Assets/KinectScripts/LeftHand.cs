@@ -30,8 +30,8 @@ public class LeftHand : MonoBehaviour
     public Image stars;
 
     // CSV 파일 경로
-    private string csvFilePath = "Assets/Resources/LH/tes.csv";
-    private string angleFile = "Assets/Resources/LH/an.csv";
+    private string csvFilePath = "Assets/Resources/Left Hand/tes.csv";
+    private string angleFile = "Assets/Resources/Left Hand/an.csv";
     private string resultFile = "Assets/Resources/re.csv";
 
     // 이전 값을 저장하기 위한 좌표

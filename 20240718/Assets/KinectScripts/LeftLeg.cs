@@ -32,8 +32,8 @@ public class LeftLeg : MonoBehaviour
     public Image stars;
 
     // CSV 파일 경로
-    private string csvFilePath = "Assets/Resources/LL/tes.csv";
-    private string angleFile = "Assets/Resources/LL/an.csv";
+    private string csvFilePath = "Assets/Resources/Left Leg/tes.csv";
+    private string angleFile = "Assets/Resources/Left Leg/an.csv";
     private string resultFile = "Assets/Resources/re.csv";
 
     // 측정 횟수

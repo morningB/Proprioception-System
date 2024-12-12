@@ -30,10 +30,10 @@ public class RightLeg : MonoBehaviour
     public Image stars;
 
     // CSV 파일 경로
-    private string csvFilePath = "Assets/Resources/RL/tes.csv";
-    private string angleFile = "Assets/Resources/RL/an.csv";
+    private string csvFilePath = "Assets/Resources/Right Leg/tes.csv";
+    private string angleFile = "Assets/Resources/Right Leg/an.csv";
     private string resultFile = "Assets/Resources/re.csv";
-    private string MLFile = "Assets/Resources/RL/re.csv";
+    private string MLFile = "Assets/Resources/Right Leg/re.csv";
     // 이전 값을 저장하기 위한 좌표
     private Vector3 previousRightHandPosition;
     private Vector3 previousRightShoulderPosition;
