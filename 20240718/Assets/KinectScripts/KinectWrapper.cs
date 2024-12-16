@@ -1,4 +1,4 @@
-// comment or uncomment the following #define directives
+﻿// comment or uncomment the following #define directives
 // depending on whether you use KinectExtras together with KinectManager
 
 //#define USE_KINECT_INTERACTION_OR_FACETRACKING
@@ -14,7 +14,7 @@ using System.Runtime.CompilerServices;
 using System.IO;
 using System.Text; 
 
-// Wrapper class that holds the various structs and dll imports
+// Wrapper class that holds the vaUpdateKinectSensorrious structs and dll imports
 // needed to set up a model with the Kinect.
 public class KinectWrapper
 {

@@ -6,58 +6,57 @@ using System.Collections.Generic;
 
 
 /// <summary>
-/// Implementation of a Holt Double Exponential Smoothing filter. The double exponential
-/// smooths the curve and predicts.  There is also noise jitter removal.
+/// Holt 이중 지수 평활 필터의 구현입니다. 
+/// 이중 지수는 곡선을 부드럽게 하고 예측하며, 노이즈 제거 기능도 포함됩니다.
 /// </summary>
 public class TrackingStateFilter
 {
-    // The history data.
+    // 필터의 과거 데이터
     private FilterDoubleExponentialData[] history;
 
-    // The transform smoothing parameters for this filter.
+    // 필터에 사용되는 변환 평활 매개변수
     private KinectWrapper.NuiTransformSmoothParameters smoothParameters;
 
-    // True when the filter parameters are initialized.
+    // 필터 매개변수가 초기화되었는지 여부
     private bool init;
-	
-	
-    /// Initializes a new instance of the class.
+
+    /// 클래스의 새 인스턴스를 초기화합니다.
     public TrackingStateFilter()
     {
         this.init = false;
     }
 
-    // Initialize the filter with a default set of TransformSmoothParameters.
+    // 기본 TransformSmoothParameters를 사용하여 필터를 초기화합니다.
     public void Init()
     {
-        // Specify some defaults
+        // 기본값으로 초기화
         //this.Init(0.25f, 0.25f, 0.25f, 0.03f, 0.05f);
-		this.Init(0.5f, 0.5f, 0.5f, 0.05f, 0.04f);
+        this.Init(0.5f, 0.5f, 0.5f, 0.05f, 0.04f);
     }
 
     /// <summary>
-    /// Initialize the filter with a set of manually specified TransformSmoothParameters.
+    /// 수동으로 지정된 TransformSmoothParameters를 사용하여 필터를 초기화합니다.
     /// </summary>
-    /// <param name="smoothingValue">Smoothing = [0..1], lower values is closer to the raw data and more noisy.</param>
-    /// <param name="correctionValue">Correction = [0..1], higher values correct faster and feel more responsive.</param>
-    /// <param name="predictionValue">Prediction = [0..n], how many frames into the future we want to predict.</param>
-    /// <param name="jitterRadiusValue">JitterRadius = The deviation distance in m that defines jitter.</param>
-    /// <param name="maxDeviationRadiusValue">MaxDeviation = The maximum distance in m that filtered positions are allowed to deviate from raw data.</param>
+    /// <param name="smoothingValue">부드러움 = [0..1], 값이 낮을수록 원시 데이터와 더 가깝고 더 노이즈가 많습니다.</param>
+    /// <param name="correctionValue">보정 = [0..1], 값이 높을수록 더 빠르게 보정되고 더 반응적입니다.</param>
+    /// <param name="predictionValue">예측 = [0..n], 미래의 몇 프레임을 예측할 것인지 결정합니다.</param>
+    /// <param name="jitterRadiusValue">진동 반경 = m 단위로 노이즈를 정의하는 편차 거리입니다.</param>
+    /// <param name="maxDeviationRadiusValue">최대 편차 = 필터링된 위치가 원시 데이터에서 벗어날 수 있는 최대 거리입니다.</param>
     public void Init(float smoothingValue, float correctionValue, float predictionValue, float jitterRadiusValue, float maxDeviationRadiusValue)
     {
         this.smoothParameters = new KinectWrapper.NuiTransformSmoothParameters();
 
-        this.smoothParameters.fSmoothing = smoothingValue;                   // How much soothing will occur.  Will lag when too high
-        this.smoothParameters.fCorrection = correctionValue;                 // How much to correct back from prediction.  Can make things springy
-        this.smoothParameters.fPrediction = predictionValue;                 // Amount of prediction into the future to use. Can over shoot when too high
-        this.smoothParameters.fJitterRadius = jitterRadiusValue;             // Size of the radius where jitter is removed. Can do too much smoothing when too high
-        this.smoothParameters.fMaxDeviationRadius = maxDeviationRadiusValue; // Size of the max prediction radius Can snap back to noisy data when too high
-        
-		this.Reset();
+        this.smoothParameters.fSmoothing = smoothingValue;                   // 부드럽게 처리하는 정도. 너무 높으면 지연 발생
+        this.smoothParameters.fCorrection = correctionValue;                 // 예측에서 복귀하는 정도. 너무 높으면 탄력성이 증가
+        this.smoothParameters.fPrediction = predictionValue;                 // 미래 예측 프레임 수. 너무 높으면 과도한 예측 발생
+        this.smoothParameters.fJitterRadius = jitterRadiusValue;             // 진동을 제거하는 반경 크기. 너무 높으면 과도한 평활화
+        this.smoothParameters.fMaxDeviationRadius = maxDeviationRadiusValue; // 최대 예측 반경 크기. 너무 높으면 노이즈 데이터로 돌아갈 수 있음
+
+        this.Reset();
         this.init = true;
     }
 
-    // Initialize the filter with a set of TransformSmoothParameters.
+    // 지정된 TransformSmoothParameters로 필터를 초기화합니다.
     public void Init(KinectWrapper.NuiTransformSmoothParameters smoothingParameters)
     {
         this.smoothParameters = smoothingParameters;
@@ -72,7 +71,7 @@ public class TrackingStateFilter
         this.history = new FilterDoubleExponentialData[(int)KinectWrapper.NuiSkeletonPositionIndex.Count];
     }
 
-    // Update the filter with a new frame of data and smooth.
+    // 새 프레임 데이터를 사용해 필터를 업데이트하고 부드럽게 처리합니다.
     public void UpdateFilter(ref KinectWrapper.NuiSkeletonData skeleton)
     {
         if (skeleton.eTrackingState != KinectWrapper.NuiSkeletonTrackingState.SkeletonTracked)
@@ -82,10 +81,10 @@ public class TrackingStateFilter
 
         if (this.init == false)
         {
-            this.Init();    // initialize with default parameters                
+            this.Init();    // 기본 매개변수로 초기화  
         }
 
-        // Check for divide by zero. Use an epsilon of a 10th of a millimeter
+        // 0으로 나누는 오류 방지. 0.1mm의 epsilon 값 사용
         smoothParameters.fJitterRadius = Math.Max(0.0001f, smoothParameters.fJitterRadius);
 
 		int jointsCount = (int)KinectWrapper.NuiSkeletonPositionIndex.Count;
@@ -95,7 +94,7 @@ public class TrackingStateFilter
         }
     }
 
-    // Update the filter for one joint.  
+    // 특정 관절에 대한 필터를 업데이트합니다.
     protected void FilterJoint(ref KinectWrapper.NuiSkeletonData skeleton, int jointIndex, ref KinectWrapper.NuiTransformSmoothParameters smoothingParameters)
     {
         float filteredState;
@@ -107,7 +106,7 @@ public class TrackingStateFilter
         float prevTrend = history[jointIndex].Trend;
         float prevRawState = history[jointIndex].RawState;
 
-        // If joint is invalid, reset the filter
+        // 관절 필터링 로직 수행
         if (rawState == 0f)
         {
             history[jointIndex].FrameCount = 0;
@@ -127,31 +126,21 @@ public class TrackingStateFilter
         }
         else
         {              
-//            // First apply jitter filter
-//            diffVal = rawState - prevFilteredState;
-//
-//            if (diffVal <= smoothingParameters.fJitterRadius)
-//            {
-//                filteredState = (rawState * (diffVal / smoothingParameters.fJitterRadius)) + (prevFilteredState * (1.0f - (diffVal / smoothingParameters.fJitterRadius)));
-//            }
-//            else
-//            {
-//                filteredState = rawState;
-//            }
+
 			
             filteredState = rawState;
 
-            // Now the double exponential smoothing filter
+
             filteredState = (filteredState * (1.0f - smoothingParameters.fSmoothing)) + ((prevFilteredState + prevTrend) * smoothingParameters.fSmoothing);
 
             diffVal = filteredState - prevFilteredState;
             trend = (diffVal * smoothingParameters.fCorrection) + (prevTrend * (1.0f - smoothingParameters.fCorrection));
         }      
 
-        // Predict into the future to reduce latency
+
         float predictedState = filteredState + (trend * smoothingParameters.fPrediction);
 
-        // Check that we are not too far away from raw data
+
         diffVal = predictedState - rawState;
 
         if (diffVal > smoothingParameters.fMaxDeviationRadius)
@@ -168,21 +157,14 @@ public class TrackingStateFilter
         // Set the filtered data back into the joint
 		skeleton.eSkeletonPositionTrackingState[jointIndex] = (KinectWrapper.NuiSkeletonPositionTrackingState)(predictedState + 0.5f);
     }
-	
 
-    // Historical Filter Data.  
+
+    // 필터 데이터 구조체
     private struct FilterDoubleExponentialData
     {
-        // Gets or sets Historical Tracking State.  
-        public float RawState;
-
-        // Gets or sets Historical Filtered Tracking State.  
-        public float FilteredState;
-
-        // Gets or sets Historical Trend.  
-        public float Trend;
-
-        // Gets or sets Historical FrameCount.  
-        public uint FrameCount;
+        public float RawState;        // 원시 상태 데이터
+        public float FilteredState;  // 필터링된 상태 데이터
+        public float Trend;          // 추세 데이터
+        public uint FrameCount;      // 프레임 카운트
     }
 }

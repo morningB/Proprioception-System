@@ -12,54 +12,54 @@ using System.Collections.Generic;
 
 
 /// <summary>
-/// FilterClippedLegs smooths out leg joint positions when the skeleton is clipped
-/// by the bottom of the camera FOV.  Inferred joint positions from the skeletal tracker
-/// can occasionally be noisy or erroneous, based on limited depth image pixels from the
-/// parts of the legs in view.  This filter applies a lot of smoothing using a double
-/// exponential filter, letting through just enough leg movement to show a kick or high step.
-/// Based on the amount of leg that is clipped/inferred, the smoothed data is feathered into the
-/// skeleton output data.
+/// ClippedLegsFilter는 카메라 시야각(FOV) 하단에 의해 다리 관절이 클리핑될 때
+/// 다리 관절의 위치를 부드럽게 조정하는 필터입니다. 스켈레탈 트래커에서 추론된
+/// 관절 위치는 가끔 노이즈가 있거나 잘못될 수 있습니다. 특히 깊이 이미지에서
+/// 다리의 일부만 관찰 가능한 경우가 해당됩니다. 이 필터는 더블 지수 필터를 사용하여
+/// 높은 단계의 부드러움을 적용하며, 킥이나 높은 스텝 같은 움직임은 적절히 반영되도록 합니다.
+/// 다리의 클리핑 및 추론 수준에 따라 필터링된 데이터를 스켈레톤 출력 데이터에 혼합합니다.
 /// </summary>
 public class ClippedLegsFilter
 {
-    // The blend weights when all leg joints are tracked.
+    // 모든 다리 관절이 추적된 경우의 혼합 가중치
     private readonly Vector3 allTracked;
 
-    // The blend weights when the foot is inferred or not tracked.
+    // 발 관절이 추론되거나 추적되지 않을 때의 혼합 가중치
     private readonly Vector3 footInferred;
 
-    // The blend weights when ankle and below are inferred or not tracked.
+    // 발목 및 그 이하가 추론되거나 추적되지 않을 때의 혼합 가중치
     private readonly Vector3 ankleInferred;
 
-    // The blend weights when knee and below are inferred or not tracked.
+    // 무릎 및 그 이하가 추론되거나 추적되지 않을 때의 혼합 가중치
     private readonly Vector3 kneeInferred;
 
-    // The joint position filter.
+    // 관절 위치 필터
     private JointPositionsFilter filterJoints;
 
-    // The timed lerp for the left knee.
+    // 왼쪽 무릎의 타임드 러프
     private TimedLerp lerpLeftKnee;
 
-    // The timed lerp for the left ankle.
+    // 왼쪽 발목의 타임드 러프
     private TimedLerp lerpLeftAnkle;
 
-    // The timed lerp for the left foot.
+    // 왼쪽 발의 타임드 러프
     private TimedLerp lerpLeftFoot;
 
-    /// The timed lerp for the right knee.
+    // 오른쪽 무릎의 타임드 러프
     private TimedLerp lerpRightKnee;
 
-    // The timed lerp for the right ankle.
+    // 오른쪽 발목의 타임드 러프
     private TimedLerp lerpRightAnkle;
 
-    // The timed lerp for the right foot.
+    // 오른쪽 발의 타임드 러프
     private TimedLerp lerpRightFoot;
 
-    // The local skeleton with leg filtering applied.
+    // 다리 필터링이 적용된 로컬 스켈레톤
     private KinectWrapper.NuiSkeletonData filteredSkeleton;
-	
 
-    // Initializes a new instance of the class.
+    /// <summary>
+    /// 클래스의 새 인스턴스를 초기화합니다.
+    /// </summary>
     public ClippedLegsFilter()
     {
         this.lerpLeftKnee = new TimedLerp();
@@ -72,19 +72,19 @@ public class ClippedLegsFilter
         this.filterJoints = new JointPositionsFilter();
         this.filteredSkeleton = new KinectWrapper.NuiSkeletonData();
 
-        // knee, ankle, foot blend amounts
-        this.allTracked = new Vector3(0.0f, 0.0f, 0.0f); // All joints are tracked
-        this.footInferred = new Vector3(0.0f, 0.0f, 1.0f); // foot is inferred
-        this.ankleInferred = new Vector3(0.5f, 1.0f, 1.0f);  // ankle is inferred
-        this.kneeInferred = new Vector3(1.0f, 1.0f, 1.0f);   // knee is inferred
+        // 무릎, 발목, 발 혼합 비율 설정
+        this.allTracked = new Vector3(0.0f, 0.0f, 0.0f); // 모든 관절 추적
+        this.footInferred = new Vector3(0.0f, 0.0f, 1.0f); // 발 추론
+        this.ankleInferred = new Vector3(0.5f, 1.0f, 1.0f); // 발목 추론
+        this.kneeInferred = new Vector3(1.0f, 1.0f, 1.0f); // 무릎 추론
 
         Reset();
     }
 
-    // Resets filter state to defaults.
+    // 필터 상태를 기본값으로 재설정합니다.
     public void Reset()
     {
-        // set up a really floaty double exponential filter - we want maximum smoothness
+        // 최대 부드러움을 위해 플로팅 더블 지수 필터 설정
         this.filterJoints.Init(0.5f, 0.3f, 1.0f, 1.0f, 1.0f);
 
         this.lerpLeftKnee.Reset();
@@ -95,24 +95,24 @@ public class ClippedLegsFilter
         this.lerpRightFoot.Reset();
     }
 
-    // Implements the per-frame filter logic for the arms up patch.
+    // 매 프레임 필터 로직을 구현합니다
     public bool FilterSkeleton(ref KinectWrapper.NuiSkeletonData skeleton, float deltaNuiTime)
     {
-//        if (null == skeleton)
-//        {
-//            return false;
-//        }
+        //        if (null == skeleton)
+        //        {
+        //            return false;
+        //        }
 
-        // exit early if we lose tracking on the entire skeleton
+        // 스켈레톤의 추적 상태 확인
         if (skeleton.eTrackingState != KinectWrapper.NuiSkeletonTrackingState.SkeletonTracked)
         {
             filterJoints.Reset();
         }
-
+        // 필터 적용을 위해 스켈레톤 복사
         KinectHelper.CopySkeleton(ref skeleton, ref filteredSkeleton);
         filterJoints.UpdateFilter(ref filteredSkeleton);
 
-        // Update lerp state with the current delta NUI time.
+        // 타임드 러프 상태 업데이트
         this.lerpLeftKnee.Tick(deltaNuiTime);
         this.lerpLeftAnkle.Tick(deltaNuiTime);
         this.lerpLeftFoot.Tick(deltaNuiTime);
@@ -120,7 +120,7 @@ public class ClippedLegsFilter
         this.lerpRightAnkle.Tick(deltaNuiTime);
         this.lerpRightFoot.Tick(deltaNuiTime);
 
-        // Exit early if we do not have a valid body basis - too much of the skeleton is invalid.
+        // 필터링된 데이터 및 혼합 비율 적용
         if ((!KinectHelper.IsTracked(skeleton, (int)KinectWrapper.NuiSkeletonPositionIndex.HipCenter)) || 
 			(!KinectHelper.IsTrackedOrInferred(skeleton, (int)KinectWrapper.NuiSkeletonPositionIndex.HipLeft)) || 
 			(!KinectHelper.IsTrackedOrInferred(skeleton, (int)KinectWrapper.NuiSkeletonPositionIndex.HipRight)))
@@ -128,49 +128,45 @@ public class ClippedLegsFilter
             return false;
         }
 
-        // Determine if the skeleton is clipped by the bottom of the FOV.
+        // 시야(FOV) 하단 클리핑 상태 확인
         bool clippedBottom = (skeleton.dwQualityFlags & (int)KinectWrapper.FrameEdges.Bottom) != 0;
 
-        // Select a mask for the left leg depending on which joints are not tracked.
-        // These masks define how much of the filtered joint positions should be blended
-        // with the raw positions.  Based on the tracking state of the leg joints, we apply
-        // more filtered data as more joints lose tracking.
+        /// 왼쪽 다리의 관절 추적 상태에 따라 적절한 마스크 선택
         Vector3 leftLegMask = this.allTracked;
 
         if (!KinectHelper.IsTracked(skeleton, (int)KinectWrapper.NuiSkeletonPositionIndex.KneeLeft))
         {
-            leftLegMask = this.kneeInferred;
+            leftLegMask = this.kneeInferred;// 무릎 추론 상태
         }
         else if (!KinectHelper.IsTracked(skeleton, (int)KinectWrapper.NuiSkeletonPositionIndex.AnkleLeft))
         {
-            leftLegMask = this.ankleInferred;
+            leftLegMask = this.ankleInferred;// 발목 추론 상태
         }
         else if (!KinectHelper.IsTracked(skeleton, (int)KinectWrapper.NuiSkeletonPositionIndex.FootLeft))
         {
-            leftLegMask = this.footInferred;
+            leftLegMask = this.footInferred;// 발 추론 상태
         }
 
-        // Select a mask for the right leg depending on which joints are not tracked.
+        // 오른쪽 다리의 관절 추적 상태에 따라 적절한 마스크 선택
         Vector3 rightLegMask = this.allTracked;
 
         if (!KinectHelper.IsTracked(skeleton, (int)KinectWrapper.NuiSkeletonPositionIndex.KneeRight))
         {
-            rightLegMask = this.kneeInferred;
+            rightLegMask = this.kneeInferred;// 무릎 추론 상태
         }
         else if (!KinectHelper.IsTracked(skeleton, (int)KinectWrapper.NuiSkeletonPositionIndex.AnkleRight))
         {
-            rightLegMask = this.ankleInferred;
+            rightLegMask = this.ankleInferred;// 발목 추론 상태
         }
         else if (!KinectHelper.IsTracked(skeleton, (int)KinectWrapper.NuiSkeletonPositionIndex.FootRight))
         {
-            rightLegMask = this.footInferred;
+            rightLegMask = this.footInferred;// 발 추론 상태
         }
 
-        // If the skeleton is not clipped by the bottom of the FOV, cut the filtered data
-        // blend in half.
+        // 클리핑 여부에 따라 필터 데이터 혼합 비율 설정
         float clipMask = clippedBottom ? 1.0f : 0.5f;
 
-        // Apply the mask values to the joints of each leg, by placing the mask values into the lerp targets.
+        // 각 다리 관절에 대해 혼합 비율 설정
         this.lerpLeftKnee.SetEnabled(leftLegMask.x * clipMask);
         this.lerpLeftAnkle.SetEnabled(leftLegMask.y * clipMask);
         this.lerpLeftFoot.SetEnabled(leftLegMask.z * clipMask);
@@ -178,57 +174,58 @@ public class ClippedLegsFilter
         this.lerpRightAnkle.SetEnabled(rightLegMask.y * clipMask);
         this.lerpRightFoot.SetEnabled(rightLegMask.z * clipMask);
 
-        // The bSkeletonUpdated flag tracks whether we have modified the output skeleton or not.
+        // 스켈레톤 업데이트 여부 플래그
         bool skeletonUpdated = false;
 
-        // Apply lerp to the left knee, which will blend the raw joint position with the filtered joint position based on the current lerp value.
+        // 왼쪽 무릎의 보간 적용
         if (this.lerpLeftKnee.IsLerpEnabled())
         {
-			int jointIndex = (int)KinectWrapper.NuiSkeletonPositionIndex.KneeLeft;
+            int jointIndex = (int)KinectWrapper.NuiSkeletonPositionIndex.KneeLeft;
             KinectHelper.LerpAndApply(ref skeleton, jointIndex, (Vector3)filteredSkeleton.SkeletonPositions[jointIndex], lerpLeftKnee.SmoothValue, KinectWrapper.NuiSkeletonPositionTrackingState.Tracked);
             skeletonUpdated = true;
         }
 
-        // Apply lerp to the left ankle.
+        // 왼쪽 발목의 보간 적용
         if (this.lerpLeftAnkle.IsLerpEnabled())
         {
-			int jointIndex = (int)KinectWrapper.NuiSkeletonPositionIndex.AnkleLeft;
+            int jointIndex = (int)KinectWrapper.NuiSkeletonPositionIndex.AnkleLeft;
             KinectHelper.LerpAndApply(ref skeleton, jointIndex, (Vector3)filteredSkeleton.SkeletonPositions[jointIndex], lerpLeftAnkle.SmoothValue, KinectWrapper.NuiSkeletonPositionTrackingState.Tracked);
             skeletonUpdated = true;
         }
 
-        // Apply lerp to the left foot.
+        // 왼쪽 발의 보간 적용
         if (this.lerpLeftFoot.IsLerpEnabled())
         {
-			int jointIndex = (int)KinectWrapper.NuiSkeletonPositionIndex.FootLeft;
+            int jointIndex = (int)KinectWrapper.NuiSkeletonPositionIndex.FootLeft;
             KinectHelper.LerpAndApply(ref skeleton, jointIndex, (Vector3)filteredSkeleton.SkeletonPositions[jointIndex], lerpLeftFoot.SmoothValue, KinectWrapper.NuiSkeletonPositionTrackingState.Inferred);
             skeletonUpdated = true;
         }
 
-        // Apply lerp to the right knee.
+        // 오른쪽 무릎의 보간 적용
         if (this.lerpRightKnee.IsLerpEnabled())
         {
-			int jointIndex = (int)KinectWrapper.NuiSkeletonPositionIndex.KneeRight;
+            int jointIndex = (int)KinectWrapper.NuiSkeletonPositionIndex.KneeRight;
             KinectHelper.LerpAndApply(ref skeleton, jointIndex, (Vector3)filteredSkeleton.SkeletonPositions[jointIndex], lerpRightKnee.SmoothValue, KinectWrapper.NuiSkeletonPositionTrackingState.Tracked);
             skeletonUpdated = true;
         }
 
-        // Apply lerp to the right ankle.
+        // 오른쪽 발목의 보간 적용
         if (this.lerpRightAnkle.IsLerpEnabled())
         {
-			int jointIndex = (int)KinectWrapper.NuiSkeletonPositionIndex.AnkleRight;
+            int jointIndex = (int)KinectWrapper.NuiSkeletonPositionIndex.AnkleRight;
             KinectHelper.LerpAndApply(ref skeleton, jointIndex, (Vector3)filteredSkeleton.SkeletonPositions[jointIndex], lerpRightAnkle.SmoothValue, KinectWrapper.NuiSkeletonPositionTrackingState.Tracked);
             skeletonUpdated = true;
         }
 
-        // Apply lerp to the right foot.
+        // 오른쪽 발의 보간 적용
         if (this.lerpRightFoot.IsLerpEnabled())
         {
-			int jointIndex = (int)KinectWrapper.NuiSkeletonPositionIndex.FootRight;
+            int jointIndex = (int)KinectWrapper.NuiSkeletonPositionIndex.FootRight;
             KinectHelper.LerpAndApply(ref skeleton, jointIndex, (Vector3)filteredSkeleton.SkeletonPositions[jointIndex], lerpRightFoot.SmoothValue, KinectWrapper.NuiSkeletonPositionTrackingState.Inferred);
             skeletonUpdated = true;
         }
 
+        // 스켈레톤이 업데이트되었는지 여부 반환
         return skeletonUpdated;
     }
 }

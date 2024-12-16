@@ -6,37 +6,38 @@ using System.Collections.Generic;
 
 
 /// <summary>
-/// Filter to correct the joint locations and joint orientations to constraint to range of viable human motion.
+/// 관절 위치와 관절 방향을 사람이 가능한 범위 내로 제한하기 위한 필터.
 /// </summary>
 public class BoneOrientationsConstraint
 {
-	public enum ConstraintAxis { X = 0, Y = 1, Z = 2 }
-	
-    // The Joint Constraints.  
+    public enum ConstraintAxis { X = 0, Y = 1, Z = 2 }
+
+    // 관절 제한 목록
     private readonly List<BoneOrientationConstraint> jointConstraints = new List<BoneOrientationConstraint>();
 
-	//private GameObject debugText;
-	
+    //private GameObject debugText;
 
-    /// Initializes a new instance of the BoneOrientationConstraints class.
+    /// <summary>
+    /// BoneOrientationConstraints 클래스의 새 인스턴스를 초기화합니다.
+    /// </summary>
     public BoneOrientationsConstraint()
     {
-		//debugText = GameObject.Find("CalibrationText");
+        //debugText = GameObject.Find("CalibrationText");
     }
-	
-	// find the bone constraint structure for given joint
-	// returns the structure index in the list, or -1 if the bone structure is not found
-	private int FindBoneOrientationConstraint(int joint)
-	{
-		for(int i = 0; i < jointConstraints.Count; i++)
-		{
-			if(jointConstraints[i].joint == joint)
-				return i;
-		}
-		
-		// not found
-		return -1;
-	}
+
+    // 주어진 관절에 대한 골격 제한 구조를 찾습니다.
+    // 리스트에서 해당 구조의 인덱스를 반환하거나, 찾을 수 없으면 -1을 반환합니다.
+    private int FindBoneOrientationConstraint(int joint)
+    {
+        for (int i = 0; i < jointConstraints.Count; i++)
+        {
+            if (jointConstraints[i].joint == joint)
+                return i;
+        }
+
+        // 찾지 못한 경우
+        return -1;
+    }
 
     // AddJointConstraint - Adds a joint constraint to the system.  
     public void AddBoneOrientationConstraint(int joint, ConstraintAxis axis, float angleMin, float angleMax)
@@ -61,7 +62,7 @@ public class BoneOrientationsConstraint
     // This is a reasonable set of constraints for plausible human bio-mechanics.
     public void AddDefaultConstraints()
     {
-//        // Spine
+//        // 척추
 //        AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.Spine, ConstraintAxis.X, -10f, 45f);
 //        AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.Spine, ConstraintAxis.Y, -10f, 30f);
 //        AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.Spine, ConstraintAxis.Z, -10f, 30f);
@@ -69,12 +70,12 @@ public class BoneOrientationsConstraint
         AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.Spine, ConstraintAxis.Y, -90f, 90f);
         AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.Spine, ConstraintAxis.Z, -90f, 90f);
 
-        // ShoulderCenter
+        // 어깨 중심
         AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.ShoulderCenter, ConstraintAxis.X, -30f, 10f);
         AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.ShoulderCenter, ConstraintAxis.Y, -20f, 20f);
         AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.ShoulderCenter, ConstraintAxis.Z, -20f, 20f);
 
-        // ShoulderLeft, ShoulderRight
+        // 왼쪽 어깨, 오른쪽 어깨
         AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.ShoulderLeft, ConstraintAxis.X, 0f, 30f);
         AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.ShoulderRight, ConstraintAxis.X, 0f, 30f);
         AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.ShoulderLeft, ConstraintAxis.Y, -60f, 60f);
@@ -82,13 +83,13 @@ public class BoneOrientationsConstraint
         AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.ShoulderLeft, ConstraintAxis.Z, -90f, 90f);
         AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.ShoulderRight, ConstraintAxis.Z, -90f, 90f);
 
-//        // ElbowLeft, ElbowRight
-//        AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.ElbowLeft, ConstraintAxis.X, 300f, 360f);
-//        AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.ElbowRight, ConstraintAxis.X, 300f, 360f);
-//        AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.ElbowLeft, ConstraintAxis.Y, 210f, 340f);
-//        AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.ElbowRight, ConstraintAxis.Y, 0f, 120f);
-//        AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.ElbowLeft, ConstraintAxis.Z, -90f, 30f);
-//        AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.ElbowRight, ConstraintAxis.Z, 0f, 120f);
+        //   // 왼쪽 팔꿈치, 오른쪽 팔꿈치
+        //        AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.ElbowLeft, ConstraintAxis.X, 300f, 360f);
+        //        AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.ElbowRight, ConstraintAxis.X, 300f, 360f);
+        //        AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.ElbowLeft, ConstraintAxis.Y, 210f, 340f);
+        //        AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.ElbowRight, ConstraintAxis.Y, 0f, 120f);
+        //        AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.ElbowLeft, ConstraintAxis.Z, -90f, 30f);
+        //        AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.ElbowRight, ConstraintAxis.Z, 0f, 120f);
         AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.ElbowLeft, ConstraintAxis.X, -90f, 90f);
         AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.ElbowRight, ConstraintAxis.X, -90f, 90f);
         AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.ElbowLeft, ConstraintAxis.Y, -90f, 90f);
@@ -96,7 +97,7 @@ public class BoneOrientationsConstraint
         AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.ElbowLeft, ConstraintAxis.Z, -90f, 90f);
         AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.ElbowRight, ConstraintAxis.Z, -90f, 90f);
 
-        // WristLeft, WristRight
+        // 왼쪽 손목, 오른쪽 손목
         AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.WristLeft, ConstraintAxis.X, -90f, 90f);
         AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.WristRight, ConstraintAxis.X, -90f, 90f);
         AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.WristLeft, ConstraintAxis.Y, -90f, 90f);
@@ -104,15 +105,15 @@ public class BoneOrientationsConstraint
         AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.WristLeft, ConstraintAxis.Z, -90f, 90f);
         AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.WristRight, ConstraintAxis.Z, -90f, 90f);
 
-//        // HipLeft, HipRight
-//        AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.HipLeft, ConstraintAxis.X, 0f, 90f);
-//        AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.HipRight, ConstraintAxis.X, 0f, 90f);
-//        AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.HipLeft, ConstraintAxis.Y, 0f, 0f);
-//        AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.HipRight, ConstraintAxis.Y, 0f, 0f);
-//        AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.HipLeft, ConstraintAxis.Z, 270f, 360f);
-//        AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.HipRight, ConstraintAxis.Z, 0f, 90f);
+        //        // HipLeft, HipRight
+        //        AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.HipLeft, ConstraintAxis.X, 0f, 90f);
+        //        AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.HipRight, ConstraintAxis.X, 0f, 90f);
+        //        AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.HipLeft, ConstraintAxis.Y, 0f, 0f);
+        //        AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.HipRight, ConstraintAxis.Y, 0f, 0f);
+        //        AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.HipLeft, ConstraintAxis.Z, 270f, 360f);
+        //        AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.HipRight, ConstraintAxis.Z, 0f, 90f);
 
-        // KneeLeft, KneeRight
+        // 왼쪽 무릎, 오른쪽 무릎
         AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.KneeLeft, ConstraintAxis.X, 270f, 360f);
         AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.KneeRight, ConstraintAxis.X, 270f, 360f);
         AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.KneeLeft, ConstraintAxis.Y, 0f, 0f);
@@ -120,7 +121,7 @@ public class BoneOrientationsConstraint
         AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.KneeLeft, ConstraintAxis.Z, 0f, 0f);
         AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.KneeRight, ConstraintAxis.Z, 0f, 0f);
 
-        // AnkleLeft, AnkleRight
+        // 왼쪽 발목, 오른쪽 발목
         AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.AnkleLeft, ConstraintAxis.X, 0f, 0f);
         AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.AnkleRight, ConstraintAxis.X, 0f, 0f);
         AddBoneOrientationConstraint((int)KinectWrapper.NuiSkeletonPositionIndex.AnkleLeft, ConstraintAxis.Y, -40f, 40f);
@@ -130,35 +131,34 @@ public class BoneOrientationsConstraint
 
 	}
 
-    // ApplyBoneOrientationConstraints and constrain rotations.
+    // ApplyBoneOrientationConstraints - 관절 회전 제한을 적용합니다.
     public void Constrain(ref Matrix4x4[] jointOrientations, ref bool[] jointTracked)
     {
-        // Constraints are defined as a vector with respect to the parent bone vector, and a constraint angle, 
-        // which is the maximum angle with respect to the constraint axis that the bone can move through.
+        // 관절 회전 제한은 부모 관절 벡터에 대해 정의된 벡터와 제한 각도로 설정됩니다.
+        // 0.0-1.0은 관절이 제한 범위 내에 있다는 의미이고, 1.0 이상이면 범위를 벗어났다는 의미입니다.
 
-        // Calculate constraint values. 0.0-1.0 means the bone is within the constraint cone. Greater than 1.0 means 
-        // it lies outside the constraint cone.
         for (int i = 0; i < this.jointConstraints.Count; i++)
         {
             BoneOrientationConstraint jc = this.jointConstraints[i];
 
             if (!jointTracked[i] || jc.joint == (int)KinectWrapper.NuiSkeletonPositionIndex.HipCenter) 
             {
-                // End joint is not tracked or Hip Center has no parent to perform this calculation with.
+                // 관절이 추적되지 않거나 Hip Center는 부모가 없어서 계산을 수행할 수 없습니다.
+
                 continue;
             }
 
-            // If the joint has a parent, constrain the bone direction to be within the constraint cone
+            // 부모가 있는 경우, 관절의 방향을 제한된 범위 내로 설정합니다.
             int parentIdx = KinectWrapper.GetSkeletonJointParent(jc.joint);
 
-            // Local bone orientation relative to parent
+            // 부모에 대한 상대적 로컬 관절 방향
             Matrix4x4 localOrientationMatrix = jointOrientations[parentIdx].inverse * jointOrientations[jc.joint];
 			
 			Vector3 localOrientationZ = (Vector3)localOrientationMatrix.GetColumn(2);
 			Vector3 localOrientationY = (Vector3)localOrientationMatrix.GetColumn(1);
 			if(localOrientationZ == Vector3.zero || localOrientationY == Vector3.zero)
 				continue;
-			
+            // 각도를 제한합니다.
             Quaternion localRotation = Quaternion.LookRotation(localOrientationZ, localOrientationY);
 			Vector3 eulerAngles = localRotation.eulerAngles;
 			bool isConstrained = false;
@@ -177,11 +177,10 @@ public class BoneOrientationsConstraint
 				 
 				if(!(angleFromMin <= ac.angleRange && angleFromMax <= ac.angleRange))
 				{
-					// Keep the current rotations around other axes and only
-					// correct the axis that has fallen out of range.
-					//Vector3 euler = globalRotation.eulerAngles;
-					
-					if(angleFromMin > angleFromMax)
+                    // 다른 축에 대한 현재 회전 값을 유지하고  범위를 벗어난 축만 수정합니다.
+                    //Vector3 euler = globalRotation.eulerAngles;
+
+                    if (angleFromMin > angleFromMax)
 					{
 						eulerAngles[ac.axis] = ac.angleMax;
 					}
@@ -198,8 +197,8 @@ public class BoneOrientationsConstraint
 			{
 				Quaternion constrainedRotation = Quaternion.Euler(eulerAngles);
 
-                // Put it back into the bone orientations
-				localOrientationMatrix.SetTRS(Vector3.zero, constrainedRotation, Vector3.one); 
+                // 수정된 회전을 뼈대 방향에 다시 적용합니다.
+                localOrientationMatrix.SetTRS(Vector3.zero, constrainedRotation, Vector3.one); 
 				jointOrientations[jc.joint] = jointOrientations[parentIdx] * localOrientationMatrix;
 				//globalOrientationMatrix.SetTRS(Vector3.zero, constrainedRotation, Vector3.one); 
 				//jointOrientations[jc.joint] = globalOrientationMatrix;
@@ -236,14 +235,14 @@ public class BoneOrientationsConstraint
     }
 
 
-	// Joint Constraint structure to hold the constraint axis, angle and cone direction and associated joint.
+    // 관절의 축, 각도, 원뿔 방향 및 관련 관절을 저장하는 제약 구조체
     private struct BoneOrientationConstraint
     {
 		// skeleton joint
 		public int joint;
-		
-		// the list of axis constraints for this bone
-		public List<AxisOrientationConstraint> axisConstrainrs;
+
+        // 이 뼈에 대한 축 제약 리스트
+        public List<AxisOrientationConstraint> axisConstrainrs;
 		
 		
         public BoneOrientationConstraint(int joint)
@@ -256,12 +255,12 @@ public class BoneOrientationsConstraint
 	
 	private struct AxisOrientationConstraint
 	{
-		// the axis to rotate around
-		public int axis;
-		public Vector3 rotateAround;
-				
-		// min, max and range of allowed angle
-		public float angleMin;
+        // 회전할 축
+        public int axis;
+        public Vector3 rotateAround;
+
+        // 허용된 각도의 최소, 최대 값과 범위
+        public float angleMin;
 		public float angleMax;
 		
 		public Quaternion minQuaternion;
@@ -271,8 +270,8 @@ public class BoneOrientationsConstraint
 		
 		public AxisOrientationConstraint(ConstraintAxis axis, float angleMin, float angleMax)
 		{
-			// Set the axis that we will rotate around
-			this.axis = (int)axis;
+            // 회전할 축 설정
+            this.axis = (int)axis;
 			
 			switch(axis)
 			{
@@ -292,14 +291,13 @@ public class BoneOrientationsConstraint
 					this.rotateAround = Vector3.zero;
 					break;
 			}
-			
-			// Set the min and max rotations in degrees
-			this.angleMin = angleMin;
-			this.angleMax = angleMax;
-			
-				 
-			// Set the min and max rotations in quaternion space
-			this.minQuaternion = Quaternion.AngleAxis(angleMin, this.rotateAround);
+
+            // 최소 및 최대 회전 각도를 설정 (도 단위)
+            this.angleMin = angleMin;
+            this.angleMax = angleMax;
+
+            // 쿼터니언 공간에서 최소 및 최대 회전 설정
+            this.minQuaternion = Quaternion.AngleAxis(angleMin, this.rotateAround);
 			this.maxQuaternion = Quaternion.AngleAxis(angleMax, this.rotateAround);
 			this.angleRange = angleMax - angleMin;
 		}
