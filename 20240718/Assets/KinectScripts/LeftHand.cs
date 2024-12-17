@@ -308,12 +308,5 @@ public class LeftHand : MonoBehaviour
         return previousLeftAnklePosition;
     }
 
-    /*
-    void MoveImageToPosition(Vector3 position)
-    {
-        Vector3 screenPos = Camera.main.WorldToScreenPoint(position);
 
-        RectTransform rectTransform = handImage.GetComponent<RectTransform>();
-        rectTransform.position = screenPos;
-    }*/
 }

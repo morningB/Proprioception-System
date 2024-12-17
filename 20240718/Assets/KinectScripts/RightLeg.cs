@@ -49,7 +49,7 @@ public class RightLeg : MonoBehaviour
         // 이미지 비활성화
         if (stars == null)
             Debug.LogError("Angle Image is not assigned.");
-      //  handImage.enabled = false;
+
 
         // 버튼 클릭 이벤트에 대한 리스너 추가
         eyeOpen.onClick.AddListener(OnEyeOpenClick);
@@ -200,12 +200,6 @@ public class RightLeg : MonoBehaviour
         float an = getAngle();
         angleText.text = "Open : " + an.ToString("F2");
 
-        //handPosition = GetRightHandPosition();
-
-        // 이미지 활성화
-        //  handImage.enabled = true;
-
-        // MoveImageToPosition(handPosition);
         SaveDataToAngleFile(an);
         openAngle = an;
     }
@@ -215,7 +209,7 @@ public class RightLeg : MonoBehaviour
         float an = getAngle();
         angleText2.text = "Close : " + an.ToString("F2");
         SaveDataToAngleFile(an);
-        // twohandPosition = GetRightHandPosition();
+       
         closeAngle = an;
     }
 
@@ -323,12 +317,4 @@ public class RightLeg : MonoBehaviour
         return previousRightAnklePosition;
     }
 
-    /*
-    void MoveImageToPosition(Vector3 position)
-    {
-        Vector3 screenPos = Camera.main.WorldToScreenPoint(position);
-
-        RectTransform rectTransform = handImage.GetComponent<RectTransform>();
-        rectTransform.position = screenPos;
-    }*/
 }

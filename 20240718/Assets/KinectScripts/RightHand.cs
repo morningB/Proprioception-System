@@ -308,20 +308,6 @@ public class RightHand : MonoBehaviour
         Debug.LogWarning("Right ankle joint not tracked. Using previous position.");
         return previousRightAnklePosition;
     }
-    public float GetAngle()
-    {
-        if (float.TryParse(angleText.text, out float angle))
-        {
-            return angle;
-        }
-        return 0f;  // 기본값 반환
-    }
-    /*
-    void MoveImageToPosition(Vector3 position)
-    {
-        Vector3 screenPos = Camera.main.WorldToScreenPoint(position);
 
-        RectTransform rectTransform = handImage.GetComponent<RectTransform>();
-        rectTransform.position = screenPos;
-    }*/
+  
 }
