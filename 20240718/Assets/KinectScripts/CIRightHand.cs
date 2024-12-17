@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CIightHand : BodyController
 {
-    protected override string CsvDirectory => "Assets/Resources/RightHand";
+    protected override string CsvDirectory => "Assets/Resources/Right Hand";
 
     protected override float CalculateAngle()
     {
