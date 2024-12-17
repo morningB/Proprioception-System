@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CIRightHand : BodyController
+public class CIRightLeg : BodyController
 {
-    protected override string CsvDirectory => "Assets/Resources/Right Hand";
+    protected override string CsvDirectory => "Assets/Resources/Right Leg";
+
     private void Update()
     {
         // 이미지 보이게 하기
@@ -12,17 +13,19 @@ public class CIRightHand : BodyController
         // 실시간 각도 측정
         angleText3.text = currentAngle.ToString("F2");
 
+        
+
         Color originColor = Color.yellow;
-        float alpha = Mathf.Clamp01(currentAngle / 90f); // 각도에 따라 알파 값 결정
+        float alpha = Mathf.Clamp01(currentAngle / 45f); // 각도에 따라 알파 값 결정
 
         Color newColor = stars.color;
 
-        if (currentAngle > 93f)
+        if (currentAngle > 48f)
         {
-            // 각도가 90를 넘으면 색상을 빨간색으로 변경
+            // 각도가 45를 넘으면 색상을 빨간색으로 변경
             newColor = Color.red;
         }
-        else if (currentAngle < 88)
+        else if (currentAngle < 43)
         {
             newColor = Color.blue;
         }
@@ -32,14 +35,16 @@ public class CIRightHand : BodyController
             newColor.a = alpha;
             newColor = originColor;
         }
+
+        stars.color = newColor;
     }
     protected override float CalculateAngle()
     {
-        Vector3 shoulder = GetJointPosition(KinectWrapper.NuiSkeletonPositionIndex.ShoulderRight);
-        Vector3 elbow = GetJointPosition(KinectWrapper.NuiSkeletonPositionIndex.ElbowRight);
-        Vector3 hand = GetJointPosition(KinectWrapper.NuiSkeletonPositionIndex.HandRight);
-
-        return Vector3.Angle(elbow - shoulder, hand - elbow);
+        
+        Vector3 AnkleLeft = GetJointPosition(KinectWrapper.NuiSkeletonPositionIndex.AnkleLeft);
+        Vector3 HipLeft = GetJointPosition(KinectWrapper.NuiSkeletonPositionIndex.HipLeft);
+        Vector3 AnkleRight = GetJointPosition(KinectWrapper.NuiSkeletonPositionIndex.AnkleRight);
+        return Vector3.Angle(AnkleLeft - HipLeft, HipLeft - AnkleRight);
     }
 
     private Vector3 GetJointPosition(KinectWrapper.NuiSkeletonPositionIndex joint)

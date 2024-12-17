@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CIRightHand : BodyController
+public class CILeftHand : BodyController
 {
-    protected override string CsvDirectory => "Assets/Resources/Right Hand";
+    protected override string CsvDirectory => "Assets/Resources/Left Hand";
     private void Update()
     {
         // 이미지 보이게 하기
@@ -35,9 +35,9 @@ public class CIRightHand : BodyController
     }
     protected override float CalculateAngle()
     {
-        Vector3 shoulder = GetJointPosition(KinectWrapper.NuiSkeletonPositionIndex.ShoulderRight);
-        Vector3 elbow = GetJointPosition(KinectWrapper.NuiSkeletonPositionIndex.ElbowRight);
-        Vector3 hand = GetJointPosition(KinectWrapper.NuiSkeletonPositionIndex.HandRight);
+        Vector3 shoulder = GetJointPosition(KinectWrapper.NuiSkeletonPositionIndex.ShoulderLeft);
+        Vector3 elbow = GetJointPosition(KinectWrapper.NuiSkeletonPositionIndex.ElbowLeft);
+        Vector3 hand = GetJointPosition(KinectWrapper.NuiSkeletonPositionIndex.HandLeft);
 
         return Vector3.Angle(elbow - shoulder, hand - elbow);
     }
