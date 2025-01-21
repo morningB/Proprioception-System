@@ -14,48 +14,23 @@
 ## 주요 기능 및 기여한 역할
 
 - **Kinect** 센서를 통해 환자의 움직임을 감지하고, **Unity**를 통해 **접근성을** 향상시키고, **아바타**로 시각화하는 등 환자가 자신의 상태를 실시간으로 확인
-    ![메인 화면](https://prod-files-secure.s3.us-west-2.amazonaws.com/87b79485-5f2d-498a-8904-84b52f8ab3e2/a6bb233d-1525-40e8-b872-ada599706a60/%EC%9C%A0%EB%8B%88%ED%8B%B01.png)
-
-메인 화면
-    
 - 화면의 **별의 상태**에 따라서 자신의 자세 수행이 잘 되었는지 아닌지를 확인
-    
-    
-    [**실행 영상** (재생 버튼 누르시면 됩니다.)](https://prod-files-secure.s3.us-west-2.amazonaws.com/87b79485-5f2d-498a-8904-84b52f8ab3e2/27004545-d8cd-4ab7-868e-1f98b85ee394/%ED%8F%AC%ED%8F%B4.mp4)
-    
-    **실행 영상** (재생 버튼 누르시면 됩니다.)
-    
+        
     - 자세 수행은 **각도로 판별**하며, 자세를 적절한 각도로 수행했으면 별이 노란색으로, 각도가 낮으면 **검은색**으로, 높으면 빨간색으로 변화합니다.
     - 또한, 양 팔과 양 다리에 대해 측정하여 총 **4가지 자세**를 측정할 수 있습니다.
-    
-    ![csv 파일로 저장되는 데이터](https://prod-files-secure.s3.us-west-2.amazonaws.com/87b79485-5f2d-498a-8904-84b52f8ab3e2/8582fdb6-3aa2-44f3-a3dc-740a2997adc6/image.png)
-    
-    csv 파일로 저장되는 데이터
-    
     - 자세를 수행하면 화면 아래 버튼을 통해 데이터를 기록할 수 있으며, 데이터는 **csv파일**의 형태로 기록됩니다.
     
 - 각도 수행 결과를 **그래프**로 비교하며 다른 사람들과의 **비교**
     
-    ![사람들의 각도 정보가 저장된 csv파일을 불러와서 막대 그래프 형태로 보여줌](https://prod-files-secure.s3.us-west-2.amazonaws.com/87b79485-5f2d-498a-8904-84b52f8ab3e2/095597a0-9390-4c8d-830b-2ac7b891d94f/image.png)
-    
-    사람들의 각도 정보가 저장된 csv파일을 불러와서 막대 그래프 형태로 보여줌
     
 - **Paired T-test**를 통해 결과 분석
     - 눈 뜨기와 감기를 기준으로 **차이가 있는지**를 분석
     - 귀무 가설로는 둘 사이에는 **차이가 없다고 가정**
     - 유의 수준(p-value)는 **0.05**로 설정
     - Right Arm과 Left Arm에서 눈을 뜬 상태와 눈을 뜨고 무게를 추가하여 부하를 가했을 때, p-value 값이 각각 **0.03**과 **0.02**로 유의미한 차이를 보임
-    
-    ![실험 결과 표](https://prod-files-secure.s3.us-west-2.amazonaws.com/87b79485-5f2d-498a-8904-84b52f8ab3e2/4a9b7a85-43d7-4e5f-840d-18de9f50c4fb/image.png)
-    
-    실험 결과 표
-    
-- **Python의 Scikit-learn**을 사용하여 **Decision Tree**와 **Random Forest**로 분류했으며, 최고 성능은 **96%**, 최저는 **81%**를 기록
-    
-    ![머신러닝 성능 지표](https://prod-files-secure.s3.us-west-2.amazonaws.com/87b79485-5f2d-498a-8904-84b52f8ab3e2/d6bb60f9-d121-4735-836e-039473aa93f7/%EA%B7%B8%EB%A6%BC1.png)
-    
-    머신러닝 성능 지표
-    
+        
+- **Python의 Scikit-learn**을 사용하여 **Decision Tree**와 **Random Forest**로 분류했으며, 최고 성능은 **96%**, 최저는 **81%** 를 기록
+            
     - [머신러닝 코드 깃허브](https://github.com/morningB/Proprioception-System/tree/main/PyCode)
     - 머신 러닝 모델 성능 지표
     - 눈을 뜨고 진행한 데이터에는 **open의 라벨링**을 하고 눈을 감고 진행한 데이터에는 **close로 라벨링**을 진행 후 분류
@@ -253,10 +228,7 @@
 - **문제**
     - 다양한 머신러닝 모델을 사용하여 데이터를 분류 했었지만, 성능 지표가 너무 낮은 것을 확인했습니다.
     - 처음 라벨링을 진행한 후 머신 러닝 성능 지표입니다. 최고 성능은 **0.95**이지만, 최저 성능은 **0.17**로 매우 낮은 지표였습니다.
-        
-        ![머신러닝 성능 지표](https://prod-files-secure.s3.us-west-2.amazonaws.com/87b79485-5f2d-498a-8904-84b52f8ab3e2/35ffc19d-8867-4a27-97ec-a9718b3f8c3b/%ED%8F%AC%ED%8F%B4%EB%A8%B8%EC%8B%A0.jpg)
-        
-        머신러닝 성능 지표
+     
         
 - **원인**
     1. 12명의 데이터를 활용하였기에 매우 적은 데이터였습니다.
@@ -278,8 +250,7 @@
     - 2024년도 **의료정보공학회**, 2024 **IEEE BHI** 학회 포스터 발표함
 - **학술제 발표**
     - 순천향대학교 제 1회 **융합대학 학술제 장려상 수상**
-        
-        ![주원 장려상.jpeg](https://prod-files-secure.s3.us-west-2.amazonaws.com/87b79485-5f2d-498a-8904-84b52f8ab3e2/5d0f0975-895d-4166-8876-2d9a6639754e/%EC%A3%BC%EC%9B%90_%EC%9E%A5%EB%A0%A4%EC%83%81.jpeg)
+          
         
 - **SW 등록**
 - **논문 투고 (under reivew)**
@@ -296,4 +267,3 @@
 
 ---
 
-[◀️이전 화면으로 돌아가기](https://www.notion.so/d560a3d5a1d8404b88472bd311e88bd5?pvs=21)
