@@ -1,3 +1,4 @@
+
 ## 프로젝트 개요
 
 - 뇌졸중 및 재활 치료 환자의 **고유수용감각 평가 방식**은 주관적인 관찰에 의존하여 **정확도가 떨어집니다**.
@@ -14,26 +15,50 @@
 ## 주요 기능 및 기여한 역할
 
 - **Kinect** 센서를 통해 환자의 움직임을 감지하고, **Unity**를 통해 **접근성을** 향상시키고, **아바타**로 시각화하는 등 환자가 자신의 상태를 실시간으로 확인
+        
+  <img src="https://github.com/user-attachments/assets/1a0b7880-54db-4921-8890-c11c441958d3" width="400" height="200"/>
+  
+  메인 화면        
+
+  <img src="https://github.com/user-attachments/assets/5a175a30-5f6c-4643-9b86-cb8cd2efe1f9" width="400" height="200"/>
+  
+  초기 화면
 - 화면의 **별의 상태**에 따라서 자신의 자세 수행이 잘 되었는지 아닌지를 확인
         
     - 자세 수행은 **각도로 판별**하며, 자세를 적절한 각도로 수행했으면 별이 노란색으로, 각도가 낮으면 **검은색**으로, 높으면 빨간색으로 변화합니다.
     - 또한, 양 팔과 양 다리에 대해 측정하여 총 **4가지 자세**를 측정할 수 있습니다.
     - 자세를 수행하면 화면 아래 버튼을 통해 데이터를 기록할 수 있으며, 데이터는 **csv파일**의 형태로 기록됩니다.
     
+         <img src="https://github.com/user-attachments/assets/75e66d21-01b2-4b9a-9d33-df7968457ca9" width="400" height="200"/>
+
+         csv 파일로 저장되는 데이터
+ 
 - 각도 수행 결과를 **그래프**로 비교하며 다른 사람들과의 **비교**
     
-    
+    <img src="https://github.com/user-attachments/assets/fa5dd831-0777-4267-88c7-5d3252ed6e39" width="400" height="200"/>
+
+    사람들의 각도 정보가 저장된 csv 파일을 불러와 막대 그래프 형태로 보여줌
+
+  
 - **Paired T-test**를 통해 결과 분석
     - 눈 뜨기와 감기를 기준으로 **차이가 있는지**를 분석
     - 귀무 가설로는 둘 사이에는 **차이가 없다고 가정**
     - 유의 수준(p-value)는 **0.05**로 설정
     - Right Arm과 Left Arm에서 눈을 뜬 상태와 눈을 뜨고 무게를 추가하여 부하를 가했을 때, p-value 값이 각각 **0.03**과 **0.02**로 유의미한 차이를 보임
-        
+
+        <img src="https://github.com/user-attachments/assets/3b489191-b72c-42c4-8611-b6a769ea3bc4" width="400" height="200"/>
+
+        실험 결과 표
 - **Python의 Scikit-learn**을 사용하여 **Decision Tree**와 **Random Forest**로 분류했으며, 최고 성능은 **96%**, 최저는 **81%** 를 기록
             
     - [머신러닝 코드 깃허브](https://github.com/morningB/Proprioception-System/tree/main/PyCode)
     - 머신 러닝 모델 성능 지표
     - 눈을 뜨고 진행한 데이터에는 **open의 라벨링**을 하고 눈을 감고 진행한 데이터에는 **close로 라벨링**을 진행 후 분류
+
+      <img src="https://github.com/user-attachments/assets/eeda066f-0074-4ea9-a9ee-7a5d2b25e2c0" width="400" height="200"/>
+
+      머신러닝 성능 지표
+      
 
 ---
 
@@ -266,4 +291,4 @@
 - **Excel**: 데이터 분석 및 유의성 검사 도구로 사용
 
 ---
-
+[노션 포트폴리오 정리](https://www.notion.so/Kinect-Unity-aae3568ed0554c19b9d0819bcbd39f41?pvs=4)
