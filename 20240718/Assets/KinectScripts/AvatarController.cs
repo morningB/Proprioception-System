@@ -81,6 +81,7 @@ public class AvatarController : MonoBehaviour
 
         // 초기 뼈 회전값 가져오기
         GetInitialRotations();
+        
     }
 
     // 매 프레임마다 아바타를 업데이트
@@ -108,17 +109,7 @@ public class AvatarController : MonoBehaviour
                 KinectWrapper.NuiSkeletonPositionIndex joint = !mirroredMovement ? boneIndex2JointMap[boneIndex] : boneIndex2MirrorJointMap[boneIndex];
                 TransformBone(UserID, joint, boneIndex, !mirroredMovement);
             }
-            else if (specIndex2JointMap.ContainsKey(boneIndex))
-            {
-                // 특수한 뼈 (쇄골 등)
-                List<KinectWrapper.NuiSkeletonPositionIndex> alJoints = !mirroredMovement ? specIndex2JointMap[boneIndex] : specIndex2MirrorJointMap[boneIndex];
-
-                if (alJoints.Count >= 2)
-                {
-                    //Vector3 baseDir = alJoints[0].ToString().EndsWith("Left") ? Vector3.left : Vector3.right;
-                    //TransformSpecialBone(UserID, alJoints[0], alJoints[1], boneIndex, baseDir, !mirroredMovement);
-                }
-            }
+            
         }
     }
 
@@ -203,44 +194,6 @@ public class AvatarController : MonoBehaviour
             boneTransform.rotation = newRotation;
     }
 
-
-    // Kinect에서 추적한 회전 값을 특수한 조인트에 적용
-    protected void TransformSpecialBone(uint userId, KinectWrapper.NuiSkeletonPositionIndex joint, KinectWrapper.NuiSkeletonPositionIndex jointParent, int boneIndex, Vector3 baseDir, bool flip)
-    {
-        Transform boneTransform = bones[boneIndex];
-        if (boneTransform == null || kinectManager == null)
-            return;
-
-        if (!kinectManager.IsJointTracked(userId, (int)joint) ||
-           !kinectManager.IsJointTracked(userId, (int)jointParent))
-        {
-            return;
-        }
-
-        Vector3 jointDir = kinectManager.GetDirectionBetweenJoints(userId, (int)jointParent, (int)joint, false, true);
-        Quaternion jointRotation = jointDir != Vector3.zero ? Quaternion.FromToRotation(baseDir, jointDir) : Quaternion.identity;
-
-        //		if(!flip)
-        //		{
-        //			Vector3 mirroredAngles = jointRotation.eulerAngles;
-        //			mirroredAngles.y = -mirroredAngles.y;
-        //			mirroredAngles.z = -mirroredAngles.z;
-        //			
-        //			jointRotation = Quaternion.Euler(mirroredAngles);
-        //		}
-
-        if (jointRotation != Quaternion.identity)
-        {
-            // 새로운 회전으로 부드럽게 전환
-            Quaternion newRotation = Kinect2AvatarRot(jointRotation, boneIndex);
-
-            if (smoothFactor != 0f)
-                boneTransform.rotation = Quaternion.Slerp(boneTransform.rotation, newRotation, smoothFactor * Time.deltaTime);
-            else
-                boneTransform.rotation = newRotation;
-        }
-
-    }
 
     // 3D 공간에서 아바타를 이동시킴 - 척추의 추적된 위치를 가져와 루트에 적용
     // 위치만 가져오고 회전은 적용하지 않음
