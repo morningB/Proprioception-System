@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Text;
-
+using UnityEditor.Rendering;
 
 public class KinectManager : MonoBehaviour
 {
@@ -182,12 +182,21 @@ public class KinectManager : MonoBehaviour
     private ClippedLegsFilter[] clippedLegsFilter;
     private BoneOrientationsConstraint boneConstraintsFilter;
     private SelfIntersectionConstraint selfIntersectionConstraint;
+  
+    // [최적화] List 대신 HashSet 사용하여 O(1) 검색 성능 확보
+    private HashSet<uint> lostUsers = new HashSet<uint>();
 
+    // [최적화] StringBuilder 사용하여 불필요한 string 할당 방지
+    private StringBuilder debugString = new StringBuilder(256);
     // 단일 KinectManager 인스턴스를 반환합니다.
     public static KinectManager Instance
     {
         get
         {
+            if (instance == null)
+            {
+                instance = FindObjectOfType<KinectManager>();
+            }
             return instance;
         }
     }
@@ -1088,10 +1097,7 @@ public class KinectManager : MonoBehaviour
 {
     if(KinectInitialized)
     {
-        // KinectExtras의 네이티브 래퍼가 다음 프레임을 확인하는 데 필요함
-        // KinectExtras의 매니저를 사용하지 않으면 아래 주석을 해제하여 사용
-        // KinectWrapper.UpdateKinectSensor();
-        
+              
         // 플레이어들이 아직 모두 보정되지 않은 경우, 사용자 맵을 그립니다.
         if(ComputeUserMap)
         {
@@ -1672,8 +1678,12 @@ void OnGUI()
     // 스켈레톤 데이터를 처리하는 함수
     void ProcessSkeleton()
 	{
-		List<uint> lostUsers = new List<uint>();
-		lostUsers.AddRange(allUsers);
+		
+      lostUsers.Clear();
+        foreach (uint userId in allUsers)
+        {
+            lostUsers.Add(userId);
+        }
 
         // 마지막 업데이트 이후 경과 시간을 계산
         float currentNuiTime = Time.realtimeSinceStartup;
@@ -1681,7 +1691,7 @@ void OnGUI()
 		
 		for(int i = 0; i < KinectWrapper.Constants.NuiSkeletonCount; i++)
 		{
-			KinectWrapper.NuiSkeletonData skeletonData = skeletonFrame.SkeletonData[i];
+			var skeletonData = skeletonFrame.SkeletonData[i];
 			uint userId = skeletonData.dwTrackingID;
 			
 			if(skeletonData.eTrackingState == KinectWrapper.NuiSkeletonTrackingState.SkeletonTracked)
@@ -1718,10 +1728,7 @@ void OnGUI()
 					}
 				}
 
-				//// get joints orientations
-				//KinectWrapper.NuiSkeletonBoneOrientation[] jointOrients = new KinectWrapper.NuiSkeletonBoneOrientation[(int)KinectWrapper.NuiSkeletonPositionIndex.Count];
-				//KinectWrapper.NuiSkeletonCalculateBoneOrientations(ref skeletonData, jointOrients);
-				
+			
 				if(userId == Player1ID && Mathf.Abs(skeletonPos.z) >= MinUserDistance &&
 				   (MaxUserDistance <= 0f || Mathf.Abs(skeletonPos.z) <= MaxUserDistance))
 				{
@@ -1756,17 +1763,8 @@ void OnGUI()
 						if(player1JointsTracked[j])
 						{
 							player1JointsPos[j] = kinectToWorld.MultiplyPoint3x4(skeletonData.SkeletonPositions[j]);
-							//player1JointsOri[j] = jointOrients[j].absoluteRotation.rotationMatrix * flipMatrix;
+
 						}
-						
-//						if(j == (int)KinectWrapper.NuiSkeletonPositionIndex.HipCenter)
-//						{
-//							string debugText = String.Format("{0} {1}", /**(int)skeletonData.eSkeletonPositionTrackingState[j], */
-//								player1JointsTracked[j] ? "T" : "F", player1JointsPos[j]/**, skeletonData.SkeletonPositions[j]*/);
-//							
-//							if(CalibrationText)
-//								CalibrationText.guiText.text = debugText;
-//						}
 					}
 
                     // 스켈레톤을 텍스처 위에 그리기
@@ -2200,5 +2198,14 @@ void OnGUI()
 		
 		return false;
 	}
-	
+
+    void DebugInfo(string message)
+    {
+        // [최적화] StringBuilder 사용하여 문자열 할당 방지
+        debugString.Clear();
+        debugString.Append("[KinectManager] ");
+        debugString.Append(message);
+        Debug.Log(debugString.ToString());
+    }
+
 }
