@@ -132,7 +132,7 @@ public class KinectManager : MonoBehaviour
     private float[] usersHistogramMap;
 
     // 모든 사용자 목록
-    private List<uint> allUsers;
+    private HashSet<uint> allUsers;
 
     // Kinect의 이미지 스트림 핸들
     private IntPtr colorStreamHandle;
@@ -188,6 +188,7 @@ public class KinectManager : MonoBehaviour
 
     // [최적화] StringBuilder 사용하여 불필요한 string 할당 방지
     private StringBuilder debugString = new StringBuilder(256);
+
     // 단일 KinectManager 인스턴스를 반환합니다.
     public static KinectManager Instance
     {
@@ -794,9 +795,8 @@ public class KinectManager : MonoBehaviour
             return;
 
         // 현재 사용자 제거
-        for (int i = allUsers.Count - 1; i >= 0; i--)
+        foreach (uint userId in allUsers)
         {
-            uint userId = allUsers[i];
             RemoveUser(userId);
         }
 
@@ -988,8 +988,15 @@ public class KinectManager : MonoBehaviour
             flipMatrix = Matrix4x4.identity;
             flipMatrix[2, 2] = -1;
 
-            instance = this;
-            DontDestroyOnLoad(gameObject);
+            if (instance == null)
+            {
+                instance = this;  // 싱글톤 초기화
+                DontDestroyOnLoad(gameObject);  // 씬 변경 시 인스턴스 유지
+            }
+            else
+            {
+                Destroy(gameObject);  // 중복 인스턴스 방지
+            }
         }
         catch (DllNotFoundException e)
         {
@@ -1047,7 +1054,7 @@ public class KinectManager : MonoBehaviour
         }
 
         // 사용자 목록 초기화 (모든 사용자 포함)
-        allUsers = new List<uint>();
+        allUsers = new HashSet<uint>;
 
         // 각 플레이어 아바타의 컨트롤러를 찾음
         Player1Controllers = new List<AvatarController>();
@@ -1653,6 +1660,7 @@ void OnGUI()
 
         // 전역 사용자 목록에서 제거
         allUsers.Remove(UserId);
+
         AllPlayersCalibrated = !TwoUsers ? allUsers.Count >= 1 : allUsers.Count >= 2; // false;
 
         // 유저를 기다리는 상태
@@ -1945,8 +1953,8 @@ void OnGUI()
 					}
 				}
 				
-				lostUsers.Remove(userId);
-			}
+				lostUsers.Remove(userId);  // [최적화] 기존 사용자 제거 시 Contains() 사용하지 않음
+            }
 		}
 		
 		// nui-timer 업데이트
