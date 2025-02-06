@@ -14,7 +14,10 @@
 
 ## 주요 기능 및 기여한 역할
 
-- **Kinect** 센서를 통해 환자의 움직임을 감지하고, **Unity**를 통해 **접근성을** 향상시키고, **아바타**로 시각화하는 등 환자가 자신의 상태를 실시간으로 확인
+### 1. 실시간 자세 감지 및 시각화
+
+- **Kinect** 센서를 통해 환자의 움직임을 감지하고, **Unity**를 통해  **아바타**로 시각화합니다.
+- 환자는 자신의 **자세 상태를 실시간 확인**할 수 있습니다.
         
   <img src="https://github.com/user-attachments/assets/1a0b7880-54db-4921-8890-c11c441958d3" width="400" height="200"/>
   
@@ -22,219 +25,175 @@
 
   <img src="https://github.com/user-attachments/assets/5a175a30-5f6c-4643-9b86-cb8cd2efe1f9" width="400" height="200"/>
   
-  초기 화면
-- 화면의 **별의 상태**에 따라서 자신의 자세 수행이 잘 되었는지 아닌지를 확인
-        
-    - 자세 수행은 **각도로 판별**하며, 자세를 적절한 각도로 수행했으면 별이 노란색으로, 각도가 낮으면 **검은색**으로, 높으면 빨간색으로 변화합니다.
-    - 또한, 양 팔과 양 다리에 대해 측정하여 총 **4가지 자세**를 측정할 수 있습니다.
-    - 자세를 수행하면 화면 아래 버튼을 통해 데이터를 기록할 수 있으며, 데이터는 **csv파일**의 형태로 기록됩니다.
-    
-         <img src="https://github.com/user-attachments/assets/75e66d21-01b2-4b9a-9d33-df7968457ca9" width="400" height="200"/>
+### 2. 자세 평가 및 피드백 제공
 
-         csv 파일로 저장되는 데이터
+- 화면의 **별 색상**을 통해 사용자가 자세를 올바르게 수행했는지 여부를 확인합니다.
+        
+- **자세 각도 판별**할 수 있습니다.
+    - 적절한 각도 → ⭐ **노란색**
+    - 각도가 낮음 → ⚫ **검은색**
+    - 각도가 높음 → 🔴 **빨간색**
+- 총 **4가지 자세 측정**할 수 있습니다 (양팔, 양다리).
+
  
-- 각도 수행 결과를 **그래프**로 비교하며 다른 사람들과의 **비교**
+### 3. 자세 비교 및 데이터 분석(Paired T-test)
+
+- 각도 수행 결과를 **그래프**로 비교하며 다른 사람들과의 **비교**할 수 있습니다.
     
     <img src="https://github.com/user-attachments/assets/fa5dd831-0777-4267-88c7-5d3252ed6e39" width="400" height="200"/>
 
     사람들의 각도 정보가 저장된 csv 파일을 불러와 막대 그래프 형태로 보여줌
 
   
-- **Paired T-test**를 통해 결과 분석
-    - 눈 뜨기와 감기를 기준으로 **차이가 있는지**를 분석
-    - 귀무 가설로는 둘 사이에는 **차이가 없다고 가정**
-    - 유의 수준(p-value)는 **0.05**로 설정
-    - Right Arm과 Left Arm에서 눈을 뜬 상태와 눈을 뜨고 무게를 추가하여 부하를 가했을 때, p-value 값이 각각 **0.03**과 **0.02**로 유의미한 차이를 보임
+- **Paired T-test**를 통해 실험 결과 분석:
+        - 눈을 뜬 상태와 감은 상태 비교
+        - 유의 수준 **p-value = 0.05** 기준
+        - **Right Arm(0.03), Left Arm(0.02)** → **유의미한 차이 확인**
 
-        <img src="https://github.com/user-attachments/assets/3b489191-b72c-42c4-8611-b6a769ea3bc4" width="400" height="200"/>
 
-        실험 결과 표
-- **Python의 Scikit-learn**을 사용하여 **Decision Tree**와 **Random Forest**로 분류했으며, 최고 성능은 **96%**, 최저는 **81%** 를 기록
-            
-    - [머신러닝 코드 깃허브](https://github.com/morningB/Proprioception-System/tree/main/PyCode)
-    - 머신 러닝 모델 성능 지표
-    - 눈을 뜨고 진행한 데이터에는 **open의 라벨링**을 하고 눈을 감고 진행한 데이터에는 **close로 라벨링**을 진행 후 분류
+    <img src="https://github.com/user-attachments/assets/3b489191-b72c-42c4-8611-b6a769ea3bc4" width="400" height="200"/>
+    실험 결과 표
+  
+### 4. [머신러닝](https://github.com/morningB/Proprioception-System/tree/main/PyCode) 기반 자세 분류
 
-      <img src="https://github.com/user-attachments/assets/eeda066f-0074-4ea9-a9ee-7a5d2b25e2c0" width="400" height="200"/>
+- **Scikit-learn**을 활용하여 **Decision Tree & Random Forest** 모델 적용했습니다.
+- 최고 성능 **96%**, 최저 성능 **81%** 기록했습니다.
+           
+- 눈을 뜨고 진행한 데이터에는 open의 라벨링을 하고 눈을 감고 진행한 데이터에는 close로 라벨링을 진행 후 분류했습니다.
+     <img src="https://github.com/user-attachments/assets/eeda066f-0074-4ea9-a9ee-7a5d2b25e2c0" width="400" height="200"/>
 
-      머신러닝 성능 지표
+     머신러닝 성능 지표
       
 
 ---
 
-## 코드 설명
+## 📌성능 최적화 및 코드 개선
 
-- **3D 공간 변화 및 Skeleton Rendering**
-    - 자세를 측정하기 위해 벡터로 변환하여 각도를 계산하는 코드
-    
-    ```csharp
-    public float getAngle()
+성능 측정은 유니티 내부의 Profiler를 사용했습니다.
+
+**1. 문제 발견 및 분석**
+
+- Kinect가 사람의 **Skeleton Point를 정상적으로 인식하지 못하는 경우**, 프레임 **Peak(최대 부하 시 순간적인 성능 저하)** 가 발생하는 문제를 발견했습니다.
+
+<img src="https://github.com/user-attachments/assets/eeda066f-0074-4ea9-a9ee-7a5d2b25e2c0" width="400" height="200"/>
+
+     머신러닝 성능 지표
+![image.png](attachment:ab97ef69-2411-4c2c-b02c-0f322bcfe4e0:image.png)
+
+1. **성능 최적화 효과**
+
+| 항목 | **개선 전** | **개선 후** | **효과** |
+| --- | --- | --- | --- |
+| **최대 부하 실행 시간(`KinectManager.Update()` )** | **30.98ms** | **25.62ms** | **⏬ 17% 단축** |
+| **GC 호출 횟수** | **98** | **64** | **⏬ 35% 감소 (메모리 최적화)** |
+| **실시간 아바타 제어 시스템 FPS** | **29.3 FPS** | **33.3 FPS** | **⏫ 15% 향상** |
+| **최소 부하 CPU 사용량** | **51.7%** | **47.5%** | **⏬ 4.2% 감소 (안정성 증가)** |
+
+### 1. CPU 부하 및 GC 호출 최적화
+
+### **🔹 기존 코드 (비효율적인 `List<uint>` 사용)**
+
+- **문제:** `List.Contains()` 및 `List.Remove()` 호출로 인해 **O(N) 검색** 발생 → 성능 저하.
+- **추가 문제:** `new` 연산을 통해 **불필요한 객체 생성** → GC 호출 증가.
+
+```csharp
+// 기존 코드: O(N) 검색으로 CPU 부하 및 메모리 할당 발생
+List<uint> allUsers = new List<uint>();
+
+for (int i = allUsers.Count - 1; i >= 0; i--) 
+{
+    uint userId = allUsers[i]; // O(N)
+    RemoveUser(userId);
+}
+
+```
+
+### **✅ 최적화 코드 (`HashSet<uint>` 사용)**
+
+- **해결:** `HashSet<>` 사용으로 **검색 성능 O(N) → O(1) 개선**.
+- **효과:** **CPU 부하 감소 & GC 발생 최소화.**
+
+```csharp
+private HashSet<uint> allUsers = new HashSet<uint>();
+
+foreach (uint userId in allUsers)
+{
+    RemoveUser(userId); // O(1)
+}
+allUsers.Clear(); // HashSet 비우기
+```
+
+### 2. 싱글톤 패턴 적용 (CPU 부하 감소 & 메모리 최적화)
+
+### **🔹 기존 코드 (`FindObjectOfType()` 반복 호출)**
+
+- **문제:** `FindObjectOfType<KinectManager>()`는 씬 내 모든 오브젝트를 탐색 → **CPU 부하 증가**.
+- **추가 문제:** `Awake()`에서 중복 인스턴스 생성 가능.
+
+```csharp
+public static KinectManager Instance
+{
+    get
     {
-        Vector3 rightHand = GetRightHandPosition();
-        Vector3 rightShoulder = GetRightShoulderPosition();
-        Vector3 rightAnkle = GetRightAnklePosition();
-    
-        if (rightHand == Vector3.zero || rightShoulder == Vector3.zero || rightAnkle == Vector3.zero)
-        {
-            Debug.LogWarning("One or more joints are not tracked.");
-            return 0.0f;
-        }
-    
-        // 어깨를 중심으로 한 오른손과 오른발목의 벡터 계산
-        Vector3 handVector = rightHand - rightShoulder;
-        Vector3 ankleVector = rightAnkle - rightShoulder;
-    
-        // 두 벡터 간의 각도 계산
-        float angle = Vector3.Angle(handVector, ankleVector);
-    
-        SaveDataToCSVFilePath(rightHand, rightShoulder, rightAnkle);
-    
-        return angle;
+        return FindObjectOfType<KinectManager>(); // 매번 검색 발생 (비효율적)
     }
-    
-    ```
-    
-    - rightHand와 같이 해당 Skeleton point를 가져오는 함수
-    
-    ```csharp
-    private Vector3 GetRightHandPosition()
+}
+.
+.
+.
+private void Awake()
+{
+    instance = this;
+		DontDestroyOnLoad(gameObject);
+}
+
+```
+
+### **✅ 최적화 코드 (싱글톤 패턴 적용)**
+
+- **해결:** 한 번만 `FindObjectOfType<KinectManager>()`을 실행하고 **결과를 캐싱**하여 불필요한 탐색 제거.
+- **효과:** **CPU 부하 감소 & 중복 인스턴스 방지.**
+
+```csharp
+// 최적화된 싱글톤 적용: 한 번만 검색하고 인스턴스를 캐싱
+private static KinectManager instance;
+
+public static KinectManager Instance
+{
+    get
     {
-        KinectWrapper.NuiSkeletonPositionIndex joint = KinectWrapper.NuiSkeletonPositionIndex.HandRight;
-        KinectManager manager = KinectManager.Instance;
-        Vector3 jointPos = Vector3.zero;
-    
-        if (manager && manager.IsInitialized())
+        if (instance == null)
         {
-            if (manager.IsUserDetected())
-            {
-                uint userId = manager.GetPlayer1ID();
-    
-                if (manager.IsJointTracked(userId, (int)joint))
-                {
-                    jointPos = manager.GetJointPosition(userId, (int)joint);
-                    
-                    previousRightHandPosition = jointPos;
-                    return jointPos;
-                }
-            }
+            instance = FindObjectOfType<KinectManager>();
         }
-    
-        Debug.LogWarning("Right hand joint not tracked. Using previous position.");
-        return previousRightHandPosition;
+        return instance;
     }
-    ```
-    
-- **시각화 시스템 개선**
-    - Kinect의 Skeleton 데이터를 바탕으로 관절들 간의 선을 **Texture2D**를 이용하여 실시간으로 표현
-    
-    ```csharp
-    private void DrawSkeleton(Texture2D aTexture, ref KinectWrapper.NuiSkeletonData skeletonData, ref bool[] playerJointsTracked)
+}
+.
+.
+.
+private void Awake()
+{
+    if (instance == null)
     {
-        int jointsCount = (int)KinectWrapper.NuiSkeletonPositionIndex.Count;
-        
-        for (int i = 0; i < jointsCount; i++)
-        {   // 부모 관절을 찾음
-            int parent = KinectWrapper.GetSkeletonJointParent(i);  
-            // 양쪽 관절이 추적되고 있으면
-            if (playerJointsTracked[i] && playerJointsTracked[parent])  
-            {
-                Vector3 posParent = KinectWrapper.MapSkeletonPointToDepthPoint(skeletonData.SkeletonPositions[parent]);  // 부모 관절의 위치
-                Vector3 posJoint = KinectWrapper.MapSkeletonPointToDepthPoint(skeletonData.SkeletonPositions[i]);  // 자식 관절의 위치
-    
-                // 관절이 추적되고 있으면, 선 색을 빨간색으로 설정하고, 그렇지 않으면 노란색으로 설정하여 선을 그립니다.
-                DrawLine(aTexture, (int)posParent.x, (int)posParent.y, (int)posJoint.x, (int)posJoint.y, Color.yellow);  // 텍스처에 선을 그림
-            }
-        }
+        instance = this;  // 싱글톤 초기화
+        DontDestroyOnLoad(gameObject);  // 씬 변경 시 인스턴스 유지
     }
-    
-    ```
-    
-    - 두 점 사이를 그리기 위해 **Bresenham 알고리즘**을 사용
-    - 이 알고리즘은 선의 **기울기와 방향**에 따라 각 픽셀을 텍스처에 찍어줌
-    
-    ```csharp
-    private void DrawLine(Texture2D a_Texture, int x1, int y1, int x2, int y2, Color a_Color)
+    else
     {
-        int width = a_Texture.width;
-        int height = a_Texture.height;
-        
-        int dy = y2 - y1;
-        int dx = x2 - x1;
-     
-        int stepy = 1;
-        if (dy < 0) 
-        {
-            dy = -dy; 
-            stepy = -1;
-        }
-        
-        int stepx = 1;
-        if (dx < 0) 
-        {
-            dx = -dx; 
-            stepx = -1;
-        }
-        
-        dy <<= 1;
-        dx <<= 1;
-        
-        if (x1 >= 0 && x1 < width && y1 >= 0 && y1 < height)
-            for(int x = -1; x <= 1; x++)
-                for(int y = -1; y <= 1; y++)
-                    a_Texture.SetPixel(x1 + x, y1 + y, a_Color);
-    
-        if (dx > dy) 
-        {
-            int fraction = dy - (dx >> 1);
-            
-            while (x1 != x2) 
-            {
-                if (fraction >= 0) 
-                {
-                    y1 += stepy;
-                    fraction -= dx;
-                }
-                
-                x1 += stepx;
-                fraction += dy;
-                
-                if(x1 >= 0 && x1 < width && y1 >= 0 && y1 < height)
-                    for(int x = -1; x <= 1; x++)
-                        for(int y = -1; y <= 1; y++)
-                            a_Texture.SetPixel(x1 + x, y1 + y, a_Color);
-            }
-        }
-        else 
-        {
-            int fraction = dx - (dy >> 1);
-            
-            while (y1 != y2) 
-            {
-                if (fraction >= 0) 
-                {
-                    x1 += stepx;
-                    fraction -= dy;
-                }
-                
-                y1 += stepy;
-                fraction += dx;
-                
-                if(x1 >= 0 && x1 < width && y1 >= 0 && y1 < height)
-                    for(int x = -1; x <= 1; x++)
-                        for(int y = -1; y <= 1; y++)
-                            a_Texture.SetPixel(x1 + x, y1 + y, a_Color);
-            }
-        }
+        Destroy(gameObject);  // 중복 인스턴스 방지
     }
-    
-    ```
-    
-- **필터 사용하여 안정성을 강화**
-    - **Holt의 이중 지수 평활 필터** (Double Exponential Smoothing Filter)를 사용하여 **스켈레톤 트래킹** 데이터를 부드럽게 하고, 예측을 통해 **지연**을 줄이며, **노이즈 제거** 기능을 제공
-        - [**TrackingStateFilter**](https://github.com/morningB/Proprioception-System/blob/main/20240718/Assets/KinectScripts/Filters/TrackingStateFilter.cs)
-    - Kinect 센서를 사용하여 사람의 관절 **회전 값을 제한**하는 기능을 제공
-    - 각 관절의 **회전 범위를 설정**해 관절이 가능한 범위 내에서만 움직일 수 있도록 제한
-        - [**BoneOrientationsConstraint**](https://github.com/morningB/Proprioception-System/blob/main/20240718/Assets/KinectScripts/Filters/BoneOrientationsConstraint.cs)
+}
+
+```
+
+### 요약
+
+- `KinectManager.Update()`의 최대 부하 실행 시간을 **17%** 단축
+- GC 호출 횟수를 **35%** 감소 → 불필요한 메모리 할당 제거
+- 실시간 아바타 제어 시스템의 FPS를 **15%** 향상
+- 최소 부하 상황에서는 CPU 부하를 **4.2%** 감소 → 안정적인 시스템 구현
+
 
 ---
 
