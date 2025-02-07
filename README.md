@@ -24,6 +24,8 @@
   메인 화면        
 
   <img src="https://github.com/user-attachments/assets/5a175a30-5f6c-4643-9b86-cb8cd2efe1f9" width="400" height="200"/>
+
+  시작 화면
   
 ### 2. 자세 평가 및 피드백 제공
 
@@ -52,6 +54,7 @@
 
 
     <img src="https://github.com/user-attachments/assets/3b489191-b72c-42c4-8611-b6a769ea3bc4" width="400" height="200"/>
+
     실험 결과 표
   
 ### 4. [머신러닝](https://github.com/morningB/Proprioception-System/tree/main/PyCode) 기반 자세 분류
@@ -75,10 +78,10 @@
 
 - Kinect가 사람의 **Skeleton Point를 정상적으로 인식하지 못하는 경우**, 프레임 **Peak(최대 부하 시 순간적인 성능 저하)** 가 발생하는 문제를 발견했습니다.
 
-<img src="https://github.com/user-attachments/assets/eeda066f-0074-4ea9-a9ee-7a5d2b25e2c0" width="400" height="200"/>
+<img src="https://github.com/user-attachments/assets/fdb56fc4-bed4-415a-aa7d-6681a51ffc0b" width="400" height="200"/>
 
-     머신러닝 성능 지표
-![image.png](attachment:ab97ef69-2411-4c2c-b02c-0f322bcfe4e0:image.png)
+ 프레임임
+
 
 1. **성능 최적화 효과**
 
@@ -197,32 +200,160 @@ private void Awake()
 
 ---
 
-## 트러블 슈팅1️⃣
+# 📌 트러블 슈팅
 
-### 🥵문제 배경
+## 1️⃣ Unity 최신 버전에서 GUIText 오류
 
-- **문제**
-    - 실시간 Skeleton point 인식 중 일부 값이 인식되지 않거나 비정상적으로 튀는 현상이 발생했습니다.
-    - 이는 움직임을 정확하게 인식하지 못하는 치명적인 문제입니다.
+### 🥵문제 상황
 
-## 트러블 슈팅2️⃣
-
-### 🥵문제 배경
-
-- **문제**
-    - 다양한 머신러닝 모델을 사용하여 데이터를 분류 했었지만, 성능 지표가 너무 낮은 것을 확인했습니다.
-    - 처음 라벨링을 진행한 후 머신 러닝 성능 지표입니다. 최고 성능은 **0.95**이지만, 최저 성능은 **0.17**로 매우 낮은 지표였습니다.
-     
-        
-- **원인**
-    1. 12명의 데이터를 활용하였기에 매우 적은 데이터였습니다.
-    2. 데이터 전처리가 잘 못 되어 머신러닝 모델에 사용하기에 적절하지 않은 데이터였습니다.
+- 최신 Unity에서 **Kinect-SDK** 사용 시 다음과 같은 오류가 발생
+    
+    > 'GUIText' is obsolete: 'GUIText has been removed. Use UI.Text instead.'
+    > 
+- Unity의 `GUIText`는 더 이상 지원되지 않으며, 최신 **Unity UI 시스템**을 사용하는 것이 필수
 
 ### 😁해결 방법
 
-- **해결**
-    - 데이터 전처리를 다시 진행하고, 라벨링 기준을 다시 잡으며 성능을 확인하였습니다.
+- UI.Text로 변경
+- 기존 코드 (GUIText 사용 - 지원 종료됨)
 
+```csharp
+using UnityEngine;
+
+public class Example : MonoBehaviour
+{
+    public GUIText guiText; // 지원 종료된 방식
+
+    void Update()
+    {
+        guiText.text = "Score: " + Time.time;
+    }
+}
+```
+
+### **개선 코드 (UI.Text 사용)**
+
+- Unity의 **Canvas + UI.Text** 시스템 적용
+- `GUIText` 대신 `Text` 사용 및 **RectTransform 기반 UI 배치 가능**
+
+```csharp
+using UnityEngine;
+using UnityEngine.UI; // UI 네임스페이스 추가
+
+public class Example : MonoBehaviour
+{
+    public Text uiText; // UI.Text 사용
+
+    void Update()
+    {
+        if (uiText != null)
+        {
+            uiText.text = "Score: " + Time.time.ToString("F2");
+        }
+    }
+}
+```
+
+**왜 UI.Text를 사용해야 하는가?**
+
+1. **유연성**
+    - `UI.Text`는 **Canvas 기반**으로 다양한 해상도와 화면 비율을 지원합니다.
+    - **RectTransform**으로 위치와 크기를 쉽게 조정할 수 있습니다.
+2. **스타일링**
+    - **폰트, 색상, 정렬, 쉐도우** 등 다양한 텍스트 효과 제공합니다.
+3. **성능**
+    - **Canvas 시스템**은 렌더링 성능이 최적화되어 있습니다.
+4. **미래 호환성**
+    - `GUIText`는 더 이상 지원되지 않으며, `UI.Text`는 **지속적으로 업데이트** 됩니다.
+
+## 2️⃣ Skeleton Point 인식 오류
+
+### 🥵**문제 상황**
+
+- **실시간 Skeleton Point 인식 중 일부 값이 비정상적으로 튀거나 감지되지 않는 문제 발생**
+- 원인 분석:
+    - Skeleton 데이터가 **연속적으로 추적되지 않음**
+    - 장애물에 사람이 가려져 센서가 제대로 추적되지 않음
+
+### 😁해결 방법
+
+- 이전 좌표를 활용하여 안정적인 값 반환
+- 기존 코드 (비정상적인 인식 가능)
+
+```csharp
+private Vector3 GetRightHandPosition()
+{
+    KinectWrapper.NuiSkeletonPositionIndex joint = KinectWrapper.NuiSkeletonPositionIndex.HandRight;
+    KinectManager manager = KinectManager.Instance;
+
+    if (manager && manager.IsInitialized() && manager.IsUserDetected())
+    {
+        uint userId = manager.GetPlayer1ID();
+        return manager.GetJointPosition(userId, (int)joint); // 불안정한 값 발생 가능
+    }
+    
+    return Vector3.zero;
+}
+
+```
+
+### **개선 코드 (이전 값 활용하여 안정적인 값 반환)**
+
+- **이전 프레임의 위치(`previousRightHandPosition`)를 저장**하여 값이 튀는 문제 해결
+
+```csharp
+private Vector3 GetRightHandPosition()
+{
+    KinectWrapper.NuiSkeletonPositionIndex joint = KinectWrapper.NuiSkeletonPositionIndex.HandRight;
+    KinectManager manager = KinectManager.Instance;
+    Vector3 jointPos = Vector3.zero;
+
+    if (manager && manager.IsInitialized())
+    {
+        if (manager.IsUserDetected())
+        {
+            uint userId = manager.GetPlayer1ID();
+
+            if (manager.IsJointTracked(userId, (int)joint))
+            {
+                jointPos = manager.GetJointPosition(userId, (int)joint);
+                
+                previousRightHandPosition = jointPos;
+                return jointPos; 
+            }
+        }
+    }
+
+    Debug.LogWarning("Right hand joint not tracked. Using previous position.");
+    return previousRightHandPosition;
+}
+```
+
+### **개선 효과**
+
+- Skeleton Point가 튀는 문제 방지
+- 이전 프레임 데이터 활용하여 연속성 유지
+- 보다 안정적인 Skeleton 트래킹 구현
+
+## 3️⃣ 머신러닝 성능 지표 낮음
+
+### 🥵문제 상황
+
+- 머신러닝 모델을 사용하여 데이터를 분류했으나 **성능 지표가 낮음**
+- 머신러닝 성능 테스트 결과:
+    - **최고 성능:** 0.95
+    - **최저 성능:** 0.17 → **성능 편차가 심함**
+
+- **원인 분석**
+    1. **12명의 데이터**를 활용하였기에 매우 적은 데이터
+    2. **데이터 전처리**가 잘 못 되어 머신러닝 모델에 사용하기에 적절하지 않은 데이터였습니다.
+
+### 😁해결 방법
+
+- **데이터 전처리 과정 재설계**
+- **라벨링 기준 재정의 및 정제된 데이터셋 활용**
+- **데이터 수집량 증가**하여 신뢰성 향상
+- 최고 성능 **0.96** 및 성능 편차 안정화.
 ---
 
 ## 성과
